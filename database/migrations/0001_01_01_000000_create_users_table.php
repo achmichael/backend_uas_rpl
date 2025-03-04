@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('username', 50)->unique();
             $table->string('email', 50);
             $table->string('password', 200);
-            $table->unsignedInteger('role_id');
+            $table->unsignedBigInteger('role_id');
             $table->rememberToken();
             $table->boolean('is_verified')->default(false);
             $table->timestamps();

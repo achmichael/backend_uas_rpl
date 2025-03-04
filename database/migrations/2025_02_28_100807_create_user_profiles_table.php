@@ -11,7 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_profiles', function (Blueprint $table) {
             Schema::create('user_profiles', function (Blueprint $table) {
                 $table->uuid('id')->primary();
                 $table->uuid('user_id');
@@ -22,7 +21,6 @@ return new class extends Migration
     
                 $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             });
-        });
     }
 
     public function down(): void

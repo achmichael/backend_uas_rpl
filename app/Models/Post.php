@@ -2,19 +2,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Helpers\UUID;
 
 class Post extends Model
 {
-    protected $fillable = ['posted_by', 'title', 'description', 'price', 'number_of_employee'];
+    use UUID;
+
+    protected $fillable = ['posted_by', 'title', 'description', 'price', 'number_of_employee', 'category_id'];
 
     public function user()
     {
         return $this->belongsTo(User::class, 'posted_by');
     }
 
-    public function categories()
+    public function category()
     {
-        return $this->belongsToMany(Category::class, 'category_post');
+        return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 
     public function applications()

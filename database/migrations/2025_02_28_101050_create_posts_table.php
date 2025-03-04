@@ -17,9 +17,11 @@ return new class extends Migration
             $table->string('title', 150);
             $table->text('description');
             $table->float('price');
+            $table->unsignedBigInteger('category_id');
             $table->integer('number_of_employee');
             $table->timestamps();
 
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->foreign('posted_by')->references('id')->on('users')->onDelete('cascade');
         });
     }
