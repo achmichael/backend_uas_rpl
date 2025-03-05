@@ -17,7 +17,7 @@ return new class extends Migration
             $table->uuid('client_id');
             $table->uuid('provider_id');
             $table->timestamp('contract_date')->useCurrent();
-            $table->enum('status', ['active', 'completed', 'terminated']);
+            $table->enum('status', ['active', 'completed', 'terminated', 'pending'])->default('pending');
             $table->timestamps();
 
             $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');

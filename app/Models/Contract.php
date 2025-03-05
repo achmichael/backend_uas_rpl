@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Helpers\UUID;
 
 class Contract extends Model
 {
+    use UUID;
+
     protected $fillable = ['post_id', 'client_id', 'provider_id', 'contract_date', 'status'];
 
     public function post()

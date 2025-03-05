@@ -54,6 +54,8 @@ class DatabaseSeeder extends Seeder
             'title' => 'Web Development',
             'description' => 'Create a website or web application for a business or personal use case scenario, with a focus on functionality, user experience, and performance. and great backend service to make application is rapidly',
             'price' => 1000000,
+            'required_skills' => ["PHP", "Laravel", "JavaScript", "VueJS"],
+            'min_experience_years' => 2,
             'category_id' => $category->id,
             'number_of_employee' => 2,
             'posted_by' => $user->id,

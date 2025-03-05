@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('title', 150);
             $table->text('description');
             $table->float('price');
+            $table->json('required_skills'); // Array: ["Laravel", "React"]
+            $table->float('min_experience_years');
             $table->unsignedBigInteger('category_id');
             $table->integer('number_of_employee');
             $table->timestamps();

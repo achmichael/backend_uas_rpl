@@ -79,11 +79,10 @@ class AuthController extends Controller
                 'username' => 'required|string|min:3|max:50|unique:users,username',
                 'email'    => 'required|email|max:50',
                 'password' => 'required|string|min:8|max:200|confirmed',
+                'role_id' => 'required|exists:roles,id|in:2,3,4,5'
             ]);
 
-            $credentials = $request->only('username', 'email', 'password');
-
-            $credentials['role_id'] = 1;
+            $credentials = $request->only('username', 'email', 'password', 'role_id');
 
             $user = User::create($credentials);
 

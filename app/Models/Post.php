@@ -1,14 +1,16 @@
 <?php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Helpers\UUID;
+use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
     use UUID;
 
-    protected $fillable = ['posted_by', 'title', 'description', 'price', 'number_of_employee', 'category_id'];
+    // protected $fillable = ['posted_by', 'title', 'description', 'price', 'number_of_employee', 'category_id'];
+
+    protected $guarded = [];
 
     public function user()
     {
@@ -34,4 +36,8 @@ class Post extends Model
     {
         return $this->hasMany(Review::class);
     }
+
+    protected $casts = [ // add this line to your model to cast the required_skills attribute to an array in the code and to a JSON when insert to database and reconverting it to an array when fetching from the database
+        'required_skills' => 'array',
+    ];
 }

@@ -11,4 +11,9 @@ class Category extends Model
     {
         return $this->hasMany(Post::class, 'category_id', 'id');
     }
+
+    public function freelancers()
+    {
+        return $this->hasMany(Freelancer::class, 'category_id', 'id');
+    }
 }
