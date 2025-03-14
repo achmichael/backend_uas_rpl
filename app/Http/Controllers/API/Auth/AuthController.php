@@ -1,11 +1,12 @@
 <?php
 namespace App\Http\Controllers\API\Auth;
 
+use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\Controller;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -49,13 +50,13 @@ class AuthController extends Controller
                 'token'   => $token,
                 'success' => true,
                 'message' => 'Login successful.',
-            ]);
+            ])->cookie('auth_token', $token, 60 * 24, '/', '', true, true, 'false', 'None'); // store token at HTTP/HTTPS Only Cookie    
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'message' => $e->getMessage(),
                 'errors'  => $e->errors(),
-            ], 422);
+            ], Response::HTTP_UNAUTHORIZED);
         }
     }
 
@@ -64,7 +65,7 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
         return response()->json([
             'message' => 'Logout Success',
-        ]);
+        ])->cookie('auth_token', '', -1, '/', '', true, true);
     }
 
     public function me(Request $request)
@@ -77,21 +78,21 @@ class AuthController extends Controller
         try {
             $request->validate([
                 'username' => 'required|string|min:3|max:50|unique:users,username',
-                'email'    => 'required|email|max:50',
+                'email'    => 'required|email|max:50|unique:users,email',
                 'password' => 'required|string|min:8|max:200|confirmed',
-                'role_id' => 'required|exists:roles,id|in:2,3,4,5'
+                'role_id'  => 'required|exists:roles,id|in:2,3,4,5',
             ]);
 
             $credentials = $request->only('username', 'email', 'password', 'role_id');
 
             $user = User::create($credentials);
 
-            try{
+            try {
                 $user->sendEmailVerificationNotification();
-            }catch (\Exception $e) {
+            } catch (\Exception $e) {
                 Log::error('Failed to send verification email: ' . $e->getMessage());
             }
-            
+
             Auth::login($user);
 
             $token = $user

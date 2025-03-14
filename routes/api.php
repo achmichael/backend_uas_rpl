@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\ContractController;
 use App\Http\Controllers\API\PostController;
+use App\Http\Controllers\API\FreelancerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +33,15 @@ Route::prefix('posts')->group(function () {
     Route::put('/{id}', [PostController::class, 'update']);
     Route::delete('/{id}', [PostController::class, 'destroy']);
     Route::get('/freelancer/{id}', [PostController::class, 'recommendFreelancer']);
+});
+
+
+Route::prefix('freelancers')->group(function (){
+    Route::get('/', [FreelancerController::class, 'index']);
+    Route::get('/{id}', [FreelancerController::class, 'show']);
+    Route::post('/', [FreelancerController::class, 'store']);
+    Route::put('/{id}', [FreelancerController::class, 'update']);
+    Route::delete('/{id}', [FreelancerController::class, 'destroy']);
 });
 
 Route::prefix('contracts')->group(function () {

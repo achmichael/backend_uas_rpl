@@ -18,7 +18,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $keyType = 'string';
     public $incrementing = false;
 
-    protected $fillable = ['username', 'email', 'password', 'role_id', 'remember_token'];
+    protected $fillable = ['username', 'email', 'password', 'role_id', 'remember_token', 'phone_number', 'profile_picture', 'is_verified'];
 
     /**
      * The attributes that should be hidden for serialization.
