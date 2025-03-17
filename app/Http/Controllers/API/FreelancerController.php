@@ -25,7 +25,7 @@ class FreelancerController extends Controller
             ]);
 
             $data = Freelancer::create($request->all());
-
+            
             return success($data, 'Data freelancer berhasil disimpan', Response::HTTP_CREATED);
         } catch (\Exception $e) {
             return error($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
