@@ -53,6 +53,7 @@ class PostController extends Controller
             ->where('title', 'like', '%' . $request->q . '%')
             ->orWhere('description', 'like', '%' . $request->q . '%')
             ->get();
+            
         return response()->json([
             'status' => 'success',
             'data'   => $posts,
