@@ -13,7 +13,7 @@ class PostController extends Controller
         if ($request->has('q')){
             return $this->search($request);
         }
-        
+
         $posts = Post::with(['category', 'user', 'reviews'])->get();
         return response()->json([
             'status' => 'success',
@@ -32,8 +32,9 @@ class PostController extends Controller
                 'posted_by'          => 'required|exists:users,id',
                 'category_id'        => 'required|exists:categories,id',
             ]);
-
-            $post = Post::create($request->all());
+            $data = $request->all();
+            $data['user_id'] = auth()->id();
+            $post = Post::create($data);
 
             return response()->json([
                 'status' => 'success',
@@ -49,7 +50,7 @@ class PostController extends Controller
 
     public function search(Request $request)
     {
-        $posts = Post::with(['category', 'user', 'reviews'])
+        $posts = Post::with(['category', 'user','company', 'reviews'])
             ->where('title', 'like', '%' . $request->q . '%')
             ->orWhere('description', 'like', '%' . $request->q . '%')
             ->get();

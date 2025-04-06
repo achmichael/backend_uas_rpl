@@ -2,16 +2,21 @@
 
 namespace App\Models;
 
+use App\Helpers\UUID;
 use Illuminate\Database\Eloquent\Model;
 
 class Job extends Model
 {
-    protected  $table = 'jobs_table';
+    use UUID;
+    protected $table = 'jobs_table';
+    protected $keyType = 'string';
+    public $incrementing = false;
 
-    protected $fillable = ['id_post'];
+    protected $guarded = [];
 
     public function post()
     {
         return $this->belongsTo(Post::class, 'id_post');
     }
+
 }

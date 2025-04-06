@@ -13,7 +13,7 @@ class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasApiTokens, UUID;
-    
+
     protected $primaryKey = 'id';
     protected $keyType = 'string';
     public $incrementing = false;
@@ -45,5 +45,30 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function user_profile(){
+        return $this->hasOne(Profile::class);
+    }
+
+    public function location(){
+        return $this->hasOne(Location::class);
+    }
+
+    public function portofolio(){
+        return $this->hasOne(Portofolio::class);
+    }
+
+    public function catalog(){
+        return $this->hasMany(Catalog::class);
+    }
+
+    public function certificate(){
+        return $this->hasMany(Certificate::class);
+    }
+
+
+    public function self(){
+        return $this->belongsToMany(User::class, 'friendships','user_id')
     }
 }

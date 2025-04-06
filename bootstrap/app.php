@@ -1,8 +1,12 @@
 <?php
 
+use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use App\Http\Middleware\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use PhpParser\Node\Stmt\TraitUseAdaptation\Alias;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -12,8 +16,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'check'=>UserController::class
+        ]);
+
+        // $middleware->validateCsrfTokens([
+        //     '/register'
+        // ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+
     })->create();

@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Helpers\UUID;
 use Illuminate\Database\Eloquent\Model;
 
 class UserProfile extends Model
 {
+    use UUID;
     protected $table = 'user_profiles';
 
     protected $fillable = ['user_id', 'full_name', 'portofolio_url', 'bio'];

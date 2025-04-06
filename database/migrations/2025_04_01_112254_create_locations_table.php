@@ -11,19 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('companies', function (Blueprint $table) {
+        Schema::create('locations', function (Blueprint $table) {
             $table->uuid('id');
             $table->uuid('user_id');
-            $table->uuid('post_id');
-            $table->string('name');
-            $table->string('image');
-            $table->string('addres');
-            $table->string('phone');
-            $table->string('email');
-            $table->string('website');
-            $table->integer('founded');
+            $table->float('accuracy');
+            $table->float('latitude');
+            $table->float('longitude');
+            $table->float('altitude');
+            $table->float('heading');
+            $table->float('speed');
+            $table->float('altitudeAccuracy');
             $table->timestamps();
-
         });
     }
 
@@ -32,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('companies');
+        Schema::dropIfExists('location');
     }
 };

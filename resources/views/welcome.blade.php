@@ -1,15 +1,21 @@
+@php
+    \Log::info('Session ID:', [session()->getId()]);
+    \Log::info('CSRF Token:', [csrf_token()]);
+@endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
+        {{-- <meta name="csrf-token" content="{{ csrf_token() }}"> --}}
         <title>Laravel</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-
+        <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Expires" content="Sat, 01 Jan 2000 00:00:00 GMT">
         <!-- Styles / Scripts -->
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
             @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -268,10 +274,19 @@
                     <div class="absolute inset-0 rounded-t-lg lg:rounded-t-none lg:rounded-r-lg shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d]"></div>
                 </div>
             </main>
+            <form action="/register" method="post">
+                @csrf
+                <input type="text" class="bg-white" name="username" placeholder="insert username"> <br>
+                <input type="email" class="bg-white" name="email" placeholder="insert email"> <br>
+                <input type="password" class="bg-white" name="password" placeholder="password"> <br>
+                <input type="number" class="bg-white" name="role_id" placeholder="id"><br>
+                <button type="submit" class="bg-white">submit</button>
+            </form>
         </div>
 
         @if (Route::has('login'))
             <div class="h-14.5 hidden lg:block"></div>
         @endif
+
     </body>
 </html>

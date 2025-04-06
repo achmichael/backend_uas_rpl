@@ -36,7 +36,7 @@ class AuthController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'Authentication failed.',
-                ], 401);
+                ], 401); 
             }
 
             $token = $user->createToken(
@@ -91,7 +91,7 @@ class AuthController extends Controller
             }catch (\Exception $e) {
                 Log::error('Failed to send verification email: ' . $e->getMessage());
             }
-            
+
             Auth::login($user);
 
             $token = $user
