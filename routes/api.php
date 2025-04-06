@@ -46,7 +46,6 @@ Route::prefix('portofolios')->group(function () {
     Route::post('/create_portofolio', [PortofolioController::class, 'portofolio']);
     Route::put('/update_portofolio/{id}', [PortofolioController::class, 'update']);
     Route::delete('/delete_portofolio/{id}', [PortofolioController::class, 'delete']);
-
 });
 
 Route::prefix('profiles')->group(function () {
@@ -61,42 +60,42 @@ Route::prefix('certificates')->group(function () {
 });
 
 Route::prefix('catalogs')->group(function () {
-    Route::post('/catalog-create', [CatalogController::class, 'catalog']);
-    Route::put('/catalog-update/{id}', [CatalogController::class, 'update']);
-    Route::delete('/catalog-delete/{id}', [CatalogController::class, 'delete']);
+    Route::post('/', [CatalogController::class, 'catalog']);
+    Route::put('/{id}', [CatalogController::class, 'update']);
+    Route::delete('/{id}', [CatalogController::class, 'delete']);
 });
 
 Route::prefix('locations')->group(function () {
-    Route::post('/location-create', [LocationController::class, 'location']);
-    Route::put('/location-update/{id}', [LocationController::class, 'update']);
-    Route::delete('/location-delete/{id}', [LocationController::class, 'delete']);
+    Route::post('/', [LocationController::class, 'location']);
+    Route::put('/{id}', [LocationController::class, 'update']);
+    Route::delete('/{id}', [LocationController::class, 'delete']);
 
 });
 
 Route::prefix('jobs')->group(function () {
-    Route::get('/jobs', [JobController::class, 'index']);
-    Route::get('/show-jobs/{id}', [JobController::class, 'show']);
-    Route::post('/create-jobs', [JobController::class, 'Jobs']);
-    Route::put('/update-jobs/{id}', [JobController::class, 'update']);
-    Route::delete('/delete-jobs/{id}', [JobController::class, 'delete']);
+    Route::get('/', [JobController::class, 'index']);
+    Route::get('/{id}', [JobController::class, 'show']);
+    Route::post('/', [JobController::class, 'Jobs']);
+    Route::put('/{id}', [JobController::class, 'update']);
+    Route::delete('/{id}', [JobController::class, 'delete']);
 });
 
 Route::prefix('companies')->group(function () {
     Route::get('/', [CompanyController::class, 'index']);
     Route::get('/search-companies/{q}', [CompanyController::class, 'search']);
-    Route::post('/create-companies', [CompanyController::class, 'create']);
-    Route::get('/show-companies/{id}', [CompanyController::class, 'show']);
-    Route::put('/update-companies/{id}', [CompanyController::class, 'update']);
-    Route::delete('/delete-companies/{id}', [CompanyController::class, 'delete']);
+    Route::post('/', [CompanyController::class, 'create']);
+    Route::get('/{id}', [CompanyController::class, 'show']);
+    Route::put('/{id}', [CompanyController::class, 'update']);
+    Route::delete('/{id}', [CompanyController::class, 'delete']);
 });
 
 Route::prefix('posts')->group(function () {
     Route::get('/', [PostController::class, 'index']);
-    Route::get('/search-posts', [PostController::class, 'search']);
+    Route::get('/search', [PostController::class, 'search']);
     Route::get('/show-posts/{id}', [PostController::class, 'show']);
-    Route::post('/create-posts', [PostController::class, 'store']);
-    Route::put('/update-posts/{id}', [PostController::class, 'update']);
-    Route::delete('/delete-posts/{id}', [PostController::class, 'destroy']);
+    Route::post('/', [PostController::class, 'store']);
+    Route::put('/{id}', [PostController::class, 'update']);
+    Route::delete('/{id}', [PostController::class, 'destroy']);
     Route::get('/freelancer/{id}', [PostController::class, 'recommendFreelancer']);
 });
 
@@ -112,6 +111,7 @@ Route::prefix('contracts')->group(function () {
     Route::post('/', [ContractController::class, 'add']);
     Route::get('/{id}', [ContractController::class, 'show']);
 });
+
 Route::prefix('users')->group(function () {
     Route::get('/');
     Route::get('/{id}', [UserController::class, 'show']);
