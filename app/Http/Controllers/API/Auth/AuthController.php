@@ -6,11 +6,36 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * @OA\Tag(
+ *     name="Auth",
+ *     description="Auth"
+ * )
+ */
 class AuthController extends Controller
 {
-
+    /**
+     * @OA\Post(
+     *     path="/api/login",
+     *     summary="User Login",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email", "password"},
+     *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="secret")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Redirect to /dashboard with auth_token cookie",
+     *     )
+     * )
+     */
     public function login(Request $request)
     {
         try {
@@ -50,7 +75,17 @@ class AuthController extends Controller
 
             $token = $user->createToken('auth_token')->plainTextToken;
 
-            return redirect('/test')->withCookie(cookie('auth_token', $token, 60));
+            session([
+                'auth_token' => $token,
+                'user_id'    => $user->id,
+                'role_id'    => $user->role_id,
+                'username'   => $user->username,
+                'email'      => $user->email,
+            ]);
+
+            session()->save();
+
+            return redirect('/test');
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => $e->getMessage(),
@@ -72,6 +107,27 @@ class AuthController extends Controller
         return response()->json($request->user());
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/register",
+     *     summary="User Registration",
+     *     tags={"Auth"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"username", "email", "password", "password_confirmation"},
+     *             @OA\Property(property="username", type="string", example="john_doe"),
+     *             @OA\Property(property="email", type="string", format="email", example="john@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="secret"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="secret")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Redirect to /dashboard with auth_token cookie",
+     *     )
+     * )
+     */
     public function register(Request $request)
     {
         try {
@@ -86,9 +142,9 @@ class AuthController extends Controller
 
             $user = User::create($credentials);
 
-            try{
+            try {
                 $user->sendEmailVerificationNotification();
-            }catch (\Exception $e) {
+            } catch (\Exception $e) {
                 Log::error('Failed to send verification email: ' . $e->getMessage());
             }
 

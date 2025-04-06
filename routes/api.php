@@ -86,7 +86,7 @@ Route::prefix('companies')->group(function () {
 Route::prefix('posts')->group(function () {
     Route::get('/', [PostController::class, 'index']);
     Route::get('/search', [PostController::class, 'search']);
-    Route::get('/show-posts/{id}', [PostController::class, 'show']);
+    Route::get('/show-post/{id}', [PostController::class, 'show']);
     Route::post('/', [PostController::class, 'store']);
     Route::put('/{id}', [PostController::class, 'update']);
     Route::delete('/{id}', [PostController::class, 'destroy']);

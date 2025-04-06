@@ -19,7 +19,7 @@ class RedirectIfAuthenticated
     {
         Log::info('Middleware - Auth check: ' . Auth::check());
         Log::info('Middleware - Session user_id: ' . session('user_id'));
-        
+
         if (Auth::check() || session()->has('user_id')) {
             return $next($request);
         }
