@@ -36,16 +36,10 @@ DELETE	/posts/{id}	destroy	Proses hapus data
 Route::post('/register', [UserController::class, 'register'])->name('register')->middleware('web');
 Route::post('/login', [UserController::class, 'login'])->middleware('web');
 
-
-Route::prefix('users')->group(function () {
-    Route::get('/user-show/{id}',[USerController::class,'check']);
-});
-
-
 Route::prefix('portofolios')->group(function () {
-    Route::post('/create_portofolio', [PortofolioController::class, 'portofolio']);
-    Route::put('/update_portofolio/{id}', [PortofolioController::class, 'update']);
-    Route::delete('/delete_portofolio/{id}', [PortofolioController::class, 'delete']);
+    Route::post('/', [PortofolioController::class, 'portofolio']);
+    Route::put('/{id}', [PortofolioController::class, 'update']);
+    Route::delete('/{id}', [PortofolioController::class, 'delete']);
 });
 
 Route::prefix('profiles')->group(function () {
@@ -54,9 +48,9 @@ Route::prefix('profiles')->group(function () {
 });
 
 Route::prefix('certificates')->group(function () {
-    Route::post('/create-certificate', [CertificateController::class, 'certificate']);
-    Route::put('/update-certificate/{id}', [CertificateController::class, 'update']);
-    Route::delete('/delete-certificate/{id}', [CertificateController::class, 'delete']);
+    Route::post('/', [CertificateController::class, 'certificate']);
+    Route::put('/{id}', [CertificateController::class, 'update']);
+    Route::delete('/{id}', [CertificateController::class, 'delete']);
 });
 
 Route::prefix('catalogs')->group(function () {
@@ -113,7 +107,7 @@ Route::prefix('contracts')->group(function () {
 });
 
 Route::prefix('users')->group(function () {
-    Route::get('/');
+    Route::update('/{id}', [UserController::class, 'update']);
     Route::get('/{id}', [UserController::class, 'show']);
 });
 
