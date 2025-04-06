@@ -8,6 +8,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/login', function () {
+    return view('welcome');
+})->name('login');
+
+Route::get('/test', function(Request $request) {
+    return $request->user();
+})->middleware(['web', 'guest']);
+
 Route::post('/email/verification-notification', function (Request $request){
     $request->user()->sendEmailVerificationNotification();
 

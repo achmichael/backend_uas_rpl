@@ -11,8 +11,8 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register'])->name('register')->middleware('web');
+Route::post('/login', [AuthController::class, 'login'])->middleware('web');
 
 // with resource to create 7 routes for PostController
 // Route::resource('posts', PostController::class);
@@ -34,7 +34,6 @@ Route::prefix('posts')->group(function () {
     Route::delete('/{id}', [PostController::class, 'destroy']);
     Route::get('/freelancer/{id}', [PostController::class, 'recommendFreelancer']);
 });
-
 
 Route::prefix('freelancers')->group(function (){
     Route::get('/', [FreelancerController::class, 'index']);

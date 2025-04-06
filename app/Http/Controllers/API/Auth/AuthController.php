@@ -6,23 +6,34 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
+
     public function login(Request $request)
     {
         try {
-            // Validasi input
             $request->validate([
-                'username'    => 'required|string|min:3|max:50',
-                'email'       => 'required|email|max:50',
+                'username'    => 'nullable|string|min:3|max:50',
+                'email'       => 'nullable|email|max:50',
                 'password'    => 'required|string|min:8|max:200',
                 'remember_me' => 'boolean',
             ]);
 
-            $credentials = $request->only('username', 'email', 'password');
             $remember    = $request->boolean('remember_me', false);
+            $credentials = [];
+
+            if ($request->filled('email')) {
+                $credentials = ['email' => $request->email, 'password' => $request->password];
+            } elseif ($request->filled('username')) {
+                $credentials = ['username' => $request->username, 'password' => $request->password];
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Please provide either username or email.',
+                ], 400);
+            }
 
             if (! Auth::attempt($credentials, $remember)) {
                 return response()->json([
@@ -31,28 +42,17 @@ class AuthController extends Controller
                 ], 401);
             }
 
-            $user = User::where('email', $credentials['email'])->first();
 
-            if (! $user) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Authentication failed.',
-                ], 401);
-            }
+            $user = Auth::user();
 
-            $token = $user->createToken(
-                'auth_token',
-                abilities: $credentials,
-                expiresAt: now()->addDay())
-                ->plainTextToken; // Membuat token
+            Auth::login($user);
 
-            return response()->json([
-                'token'   => $token,
-                'success' => true,
-                'message' => 'Login successful.',
-            ])->cookie('auth_token', $token, 60 * 24, '/', '', true, true, 'false', 'None'); // store token at HTTP/HTTPS Only Cookie    
+            $request->session()->regenerate();
 
-        } catch (\Illuminate\Validation\ValidationException $e) {
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            return redirect('/test')->withCookie(cookie('auth_token', $token, 60));
+        } catch (ValidationException $e) {
             return response()->json([
                 'message' => $e->getMessage(),
                 'errors'  => $e->errors(),
@@ -87,26 +87,35 @@ class AuthController extends Controller
 
             $user = User::create($credentials);
 
-            try {
-                $user->sendEmailVerificationNotification();
-            } catch (\Exception $e) {
-                Log::error('Failed to send verification email: ' . $e->getMessage());
-            }
+            // try {
+            //     $user->sendEmailVerificationNotification();
+            // } catch (\Exception $e) {
+            //     Log::error('Failed to send verification email: ' . $e->getMessage());
+            // }
 
             Auth::login($user);
 
-            $token = $user
-                ->createToken(
-                    'auth_token',
-                    abilities: $credentials,
-                    expiresAt: now()->addDay())
-                ->plainTextToken;
+            $request->session()->regenerate();
 
-            return response()->json([
-                'token'   => $token,
-                'success' => true,
-                'message' => 'Register Success',
+            // Di controller register
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            session([
+                'auth_token' => $token,
+                'user_id'    => $user->id,
+                'role_id'    => $user->role_id,
+                'username'   => $user->username,
+                'email'      => $user->email,
             ]);
+
+            session()->save();
+
+            // return response()->json([
+            //     'token'   => $token,
+            //     'success' => true,
+            //     'message' => 'Register successful.',
+            // ])->cookie('auth_token', $token, 60 * 24, '/', '', true, true, false, 'Lax');
+            return redirect('/test')->withCookie(cookie('auth_token', $token, 60));
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'message' => $e->getMessage(),
