@@ -42,7 +42,6 @@ class AuthController extends Controller
                 ], 401);
             }
 
-
             $user = Auth::user();
 
             Auth::login($user);
