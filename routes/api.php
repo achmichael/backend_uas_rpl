@@ -107,7 +107,7 @@ Route::prefix('contracts')->group(function () {
 });
 
 Route::prefix('users')->group(function () {
-    Route::update('/{id}', [UserController::class, 'update']);
+    Route::put('/{id}', [UserController::class, 'update']);
     Route::get('/{id}', [UserController::class, 'show']);
 });
 
