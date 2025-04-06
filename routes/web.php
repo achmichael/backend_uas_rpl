@@ -2,11 +2,21 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\UserController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return response()
+        ->view('welcome')
+        ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+})->name('login');
+
+
+Route::middleware('web')->group(function () {
+   
+Route::get('/home', function () {
+    return view('home');
+})->middleware(['check']);
 
 Route::get('/login', function () {
     return view('welcome');
@@ -30,3 +40,5 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
     $request->fulfill();
     return redirect('/');
 })->middleware(['auth', 'signed'])->name('verification.verify');
+});
+

@@ -86,11 +86,11 @@ class AuthController extends Controller
 
             $user = User::create($credentials);
 
-            // try {
-            //     $user->sendEmailVerificationNotification();
-            // } catch (\Exception $e) {
-            //     Log::error('Failed to send verification email: ' . $e->getMessage());
-            // }
+            try{
+                $user->sendEmailVerificationNotification();
+            }catch (\Exception $e) {
+                Log::error('Failed to send verification email: ' . $e->getMessage());
+            }
 
             Auth::login($user);
 

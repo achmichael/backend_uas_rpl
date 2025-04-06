@@ -14,6 +14,13 @@ return new class extends Migration
         Schema::create('jobs_table', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('id_post');
+            $table->integer('min_experience_year');
+            $table->integer('number_of_employee');
+            $table->integer('duration');
+            $table->enum('status', ['open','closed']);
+            $table->enum('type_job',['full-time','part-time','contract']);
+            $table->enum('type_salary',['fixed','flexible']);
+            $table->enum('system',['wfo','wfh']);
             $table->timestamps();
 
             $table->foreign('id_post')->references('id')->on('posts')->onDelete('cascade');
@@ -25,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('jobs');
+        Schema::dropIfExists('jobs_table');
     }
 };

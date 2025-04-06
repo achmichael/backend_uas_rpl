@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Helpers\UUID;
 use Illuminate\Database\Eloquent\Model;
 
 class Freelancer extends Model
 {
+    use UUID;
     protected $guarded = [];
 
     public function user()
