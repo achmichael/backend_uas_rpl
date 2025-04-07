@@ -67,7 +67,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Catalog::class);
     }
 
-    public function certificate(){
+    public function certificates(){
         return $this->hasMany(Certificate::class);
     }
 

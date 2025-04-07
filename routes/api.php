@@ -37,13 +37,13 @@ Route::post('/register', [AuthController::class, 'register'])->name('register')-
 Route::post('/login', [AuthController::class, 'login'])->middleware('web');
 
 Route::prefix('portofolios')->group(function () {
-    Route::post('/', [PortofolioController::class, 'portofolio']);
+    Route::post('/', [PortofolioController::class, 'create']);
     Route::put('/{id}', [PortofolioController::class, 'update']);
     Route::delete('/{id}', [PortofolioController::class, 'delete']);
 });
 
-Route::prefix('profiles')->group(function () {
-    Route::get('/', [UserProfileController::class, '']);
+Route::prefix('user_profiles')->group(function () {
+    Route::post('/', [UserProfileController::class, 'create']);
 
 });
 
@@ -60,7 +60,7 @@ Route::prefix('catalogs')->group(function () {
 });
 
 Route::prefix('locations')->group(function () {
-    Route::post('/', [LocationController::class, 'location']);
+    Route::post('/', [LocationController::class, 'create']);
     Route::put('/{id}', [LocationController::class, 'update']);
     Route::delete('/{id}', [LocationController::class, 'delete']);
 
@@ -69,7 +69,7 @@ Route::prefix('locations')->group(function () {
 Route::prefix('jobs')->group(function () {
     Route::get('/', [JobController::class, 'index']);
     Route::get('/{id}', [JobController::class, 'show']);
-    Route::post('/', [JobController::class, 'Jobs']);
+    Route::post('/', [JobController::class, 'create']);
     Route::put('/{id}', [JobController::class, 'update']);
     Route::delete('/{id}', [JobController::class, 'delete']);
 });

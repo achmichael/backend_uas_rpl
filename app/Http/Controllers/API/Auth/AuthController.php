@@ -66,8 +66,15 @@ class AuthController extends Controller
                     'message' => 'Login failed.',
                 ], 401);
             }
-
+            
             $user = Auth::user();
+
+            if (! $user->is_verified) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Please verify your email address.',
+                ], 403);
+            }
 
             Auth::login($user);
 
