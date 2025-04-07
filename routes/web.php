@@ -9,7 +9,7 @@ Route::get('/', function () {
     return response()
         ->view('welcome')
         ->header('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
-})->name('login');
+});
 
 
 Route::middleware('web')->group(function () {
@@ -17,6 +17,14 @@ Route::middleware('web')->group(function () {
 Route::get('/home', function () {
     return view('home');
 })->middleware(['check']);
+
+Route::get('/login', function () {
+    return view('welcome');
+})->name('login');
+
+Route::get('/test', function(Request $request) {
+    return $request->user();
+})->middleware(['web', 'guest']);
 
 Route::post('/email/verification-notification', function (Request $request){
     $request->user()->sendEmailVerificationNotification();

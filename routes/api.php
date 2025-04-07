@@ -1,8 +1,4 @@
 <?php
-
-use App\Models\Certificate;
-use App\Models\Job;
-use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\JobController;
@@ -13,16 +9,17 @@ use App\Http\Controllers\API\CompanyController;
 use App\Http\Controllers\API\ContractController;
 use App\Http\Controllers\API\LocationController;
 use App\Http\Controllers\API\Auth\AuthController;
+use App\Http\Controllers\API\FreelancerController;
 use App\Http\Controllers\API\PortofolioController;
-use App\Http\Controllers\API\UserProfileController;
 use App\Http\Controllers\API\CertificateController;
+use App\Http\Controllers\API\UserProfileController;
 
 Route::get('/', function (Request $request) {
     return $request->user();
 });
 
-// Route::post('/register', [AuthController::class, 'register']);
-// Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register'])->name('register')->middleware('web');
+Route::post('/login', [AuthController::class, 'login'])->middleware('web');
 
 // with resource to create 7 routes for PostController
 // Route::resource('posts', PostController::class);
@@ -36,79 +33,80 @@ PUT/PATCH	/posts/{id}	update	Proses update data
 DELETE	/posts/{id}	destroy	Proses hapus data
 */
 
-Route::post('/register', [UserController::class, 'register'])->name('register');
-Route::post('/login', [UserController::class, 'login']);
-
-
-Route::prefix('users')->group(function () {
-    Route::get('/user-show/{id}',[USerController::class,'check']);
-});
-
+Route::post('/register', [AuthController::class, 'register'])->name('register')->middleware('web');
+Route::post('/login', [AuthController::class, 'login'])->middleware('web');
 
 Route::prefix('portofolios')->group(function () {
-    Route::post('/create_portofolio', [PortofolioController::class, 'portofolio']);
-    Route::put('/update_portofolio/{id}', [PortofolioController::class, 'update']);
-    Route::delete('/delete_portofolio/{id}', [PortofolioController::class, 'delete']);
-
+    Route::post('/', [PortofolioController::class, 'create']);
+    Route::put('/{id}', [PortofolioController::class, 'update']);
+    Route::delete('/{id}', [PortofolioController::class, 'delete']);
 });
 
-Route::prefix('profiles')->group(function () {
-    Route::get('/', [UserProfileController::class, '']);
+Route::prefix('user_profiles')->group(function () {
+    Route::post('/', [UserProfileController::class, 'create']);
 
 });
 
 Route::prefix('certificates')->group(function () {
-    Route::post('/create-certificate', [CertificateController::class, 'certificate']);
-    Route::put('/update-certificate/{id}', [CertificateController::class, 'update']);
-    Route::delete('/delete-certificate/{id}', [CertificateController::class, 'delete']);
+    Route::post('/', [CertificateController::class, 'certificate']);
+    Route::put('/{id}', [CertificateController::class, 'update']);
+    Route::delete('/{id}', [CertificateController::class, 'delete']);
 });
 
 Route::prefix('catalogs')->group(function () {
-    Route::post('/catalog-create', [CatalogController::class, 'catalog']);
-    Route::put('/catalog-update/{id}', [CatalogController::class, 'update']);
-    Route::delete('/catalog-delete/{id}', [CatalogController::class, 'delete']);
+    Route::post('/', [CatalogController::class, 'catalog']);
+    Route::put('/{id}', [CatalogController::class, 'update']);
+    Route::delete('/{id}', [CatalogController::class, 'delete']);
 });
 
 Route::prefix('locations')->group(function () {
-    Route::post('/location-create', [LocationController::class, 'location']);
-    Route::put('/location-update/{id}', [LocationController::class, 'update']);
-    Route::delete('/location-delete/{id}', [LocationController::class, 'delete']);
+    Route::post('/', [LocationController::class, 'create']);
+    Route::put('/{id}', [LocationController::class, 'update']);
+    Route::delete('/{id}', [LocationController::class, 'delete']);
 
 });
 
 Route::prefix('jobs')->group(function () {
-    Route::get('/jobs', [JobController::class, 'index']);
-    Route::get('/show-jobs/{id}', [JobController::class, 'show']);
-    Route::post('/create-jobs', [JobController::class, 'Jobs']);
-    Route::put('/update-jobs/{id}', [JobController::class, 'update']);
-    Route::delete('/delete-jobs/{id}', [JobController::class, 'delete']);
+    Route::get('/', [JobController::class, 'index']);
+    Route::get('/{id}', [JobController::class, 'show']);
+    Route::post('/', [JobController::class, 'create']);
+    Route::put('/{id}', [JobController::class, 'update']);
+    Route::delete('/{id}', [JobController::class, 'delete']);
 });
 
 Route::prefix('companies')->group(function () {
     Route::get('/', [CompanyController::class, 'index']);
-    Route::get('/search-companies/{q}', [CompanyController::class, 'search']);
-    Route::post('/create-companies', [CompanyController::class, 'create']);
-    Route::get('/show-companies/{id}', [CompanyController::class, 'show']);
-    Route::put('/update-companies/{id}', [CompanyController::class, 'update']);
-    Route::delete('/delete-companies/{id}', [CompanyController::class, 'delete']);
+    Route::post('/', [CompanyController::class, 'create']);
+    Route::get('/{id}', [CompanyController::class, 'show']);
+    Route::put('/{id}', [CompanyController::class, 'update']);
+    Route::delete('/{id}', [CompanyController::class, 'delete']);
 });
 
 Route::prefix('posts')->group(function () {
     Route::get('/', [PostController::class, 'index']);
-    Route::get('/search-posts', [PostController::class, 'search']);
-    Route::get('/show-posts/{id}', [PostController::class, 'show']);
-    Route::post('/create-posts', [PostController::class, 'store']);
-    Route::put('/update-posts/{id}', [PostController::class, 'update']);
-    Route::delete('/delete-posts/{id}', [PostController::class, 'destroy']);
+    Route::get('/search', [PostController::class, 'search']);
+    Route::get('/show-post/{id}', [PostController::class, 'show']);
+    Route::post('/', [PostController::class, 'store']);
+    Route::put('/{id}', [PostController::class, 'update']);
+    Route::delete('/{id}', [PostController::class, 'destroy']);
     Route::get('/freelancer/{id}', [PostController::class, 'recommendFreelancer']);
+});
+
+Route::prefix('freelancers')->group(function (){
+    Route::get('/', [FreelancerController::class, 'index']);
+    Route::get('/{id}', [FreelancerController::class, 'show']);
+    Route::post('/', [FreelancerController::class, 'store']);
+    Route::put('/{id}', [FreelancerController::class, 'update']);
+    Route::delete('/{id}', [FreelancerController::class, 'destroy']);
 });
 
 Route::prefix('contracts')->group(function () {
     Route::post('/', [ContractController::class, 'add']);
     Route::get('/{id}', [ContractController::class, 'show']);
 });
+
 Route::prefix('users')->group(function () {
-    Route::get('/');
+    Route::put('/{id}', [UserController::class, 'update']);
     Route::get('/{id}', [UserController::class, 'show']);
 });
 

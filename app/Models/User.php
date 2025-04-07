@@ -1,14 +1,13 @@
-<?php
 
+<?php
 namespace App\Models;
 
-use App\Helpers\UUID;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use App\Helpers\UUID;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -16,10 +15,10 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasFactory, Notifiable, HasApiTokens, UUID;
 
     protected $primaryKey = 'id';
-    protected $keyType = 'string';
-    public $incrementing = false;
+    protected $keyType    = 'string';
+    public $incrementing  = false;
 
-    protected $fillable = ['username', 'email', 'password', 'role_id', 'remember_token'];
+    protected $fillable = ['username', 'email', 'password', 'role_id', 'remember_token', 'phone_number', 'profile_picture', 'is_verified'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -35,6 +34,11 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasOne(Freelancer::class);
     }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'posted_by', 'id');
+    }
     /**
      * Get the attributes that should be cast.
      *
@@ -45,7 +49,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'password'          => 'hashed',
         ];
     }
 
@@ -65,23 +69,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Catalog::class);
     }
 
-    public function certificate(){
+    public function certificates(){
         return $this->hasMany(Certificate::class);
     }
 
-
-    public function friendofmine(){
-        return $this->belongsToMany(User::class, 'friendships','user_id','friend_id')
-                    ->withPivot('status')->withTimestamps;
-    }
-
-    public function myfriend(){
-        return $this->belongsToMany(User::class,'friendships','friend_id','user_id')
-                    ->withPivot('status')->withTimestamps;
-    }
-
-    public function friend(){
-        return $this->self()->wherePivot('status', 'accepted')->get()
-                    ->merge ($this->friend()->wherePivot('status', 'accepted')->get());
+    public function self(){
+        return $this->belongsToMany(User::class, 'friendships','user_id');
     }
 }

@@ -14,9 +14,11 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('username', 50)->unique();
-            $table->string('email', 50);
+            $table->string('email', 50)->unique();
             $table->string('password', 200);
             $table->unsignedBigInteger('role_id');
+            $table->string('phone_number', 15)->nullable();
+            $table->string('profile_picture', 100)->nullable();
             $table->rememberToken();
             $table->boolean('is_verified')->default(false);
             $table->timestamps();
