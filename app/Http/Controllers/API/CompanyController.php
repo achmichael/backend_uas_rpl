@@ -39,7 +39,7 @@ class CompanyController extends Controller
                 'founded'   => 'required|numeric',
             ]);
             $data = $request->all();
-            $data['user_id'] = auth()->id();
+            $data['user_id'] = auth()->id;
             $company = Company::create($data);
 
             return response()->json([
@@ -69,7 +69,6 @@ class CompanyController extends Controller
     }
 
     public function search(Request $request){
-
         $company = Company::with(['user'])
         ->where('name', 'like', '%' . $request->q . '%')
         ->get();

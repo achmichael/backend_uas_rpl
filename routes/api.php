@@ -33,8 +33,8 @@ PUT/PATCH	/posts/{id}	update	Proses update data
 DELETE	/posts/{id}	destroy	Proses hapus data
 */
 
-Route::post('/register', [UserController::class, 'register'])->name('register')->middleware('web');
-Route::post('/login', [UserController::class, 'login'])->middleware('web');
+Route::post('/register', [AuthController::class, 'register'])->name('register')->middleware('web');
+Route::post('/login', [AuthController::class, 'login'])->middleware('web');
 
 Route::prefix('portofolios')->group(function () {
     Route::post('/', [PortofolioController::class, 'portofolio']);
@@ -76,7 +76,6 @@ Route::prefix('jobs')->group(function () {
 
 Route::prefix('companies')->group(function () {
     Route::get('/', [CompanyController::class, 'index']);
-    Route::get('/search-companies/{q}', [CompanyController::class, 'search']);
     Route::post('/', [CompanyController::class, 'create']);
     Route::get('/{id}', [CompanyController::class, 'show']);
     Route::put('/{id}', [CompanyController::class, 'update']);

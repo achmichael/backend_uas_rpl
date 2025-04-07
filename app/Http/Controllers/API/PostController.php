@@ -33,7 +33,7 @@ class PostController extends Controller
                 'category_id'        => 'required|exists:categories,id',
             ]);
             $data = $request->all();
-            $data['user_id'] = auth()->id();
+            $data['user_id'] = auth()->id;
             $post = Post::create($data);
 
             return response()->json([

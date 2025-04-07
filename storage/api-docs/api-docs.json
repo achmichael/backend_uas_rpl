@@ -30,7 +30,7 @@
                                     "password": {
                                         "type": "string",
                                         "format": "password",
-                                        "example": "secret"
+                                        "example": "secret123"
                                     }
                                 },
                                 "type": "object"

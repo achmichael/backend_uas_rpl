@@ -27,7 +27,7 @@ class AuthController extends Controller
      *         @OA\JsonContent(
      *             required={"email", "password"},
      *             @OA\Property(property="email", type="string", format="email", example="user@example.com"),
-     *             @OA\Property(property="password", type="string", format="password", example="secret")
+     *             @OA\Property(property="password", type="string", format="password", example="secret123")
      *         )
      *     ),
      *     @OA\Response(
@@ -63,7 +63,7 @@ class AuthController extends Controller
             if (! Auth::attempt($credentials, $remember)) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'The provided credentials are incorrect.',
+                    'message' => 'Login failed.',
                 ], 401);
             }
 
@@ -85,7 +85,8 @@ class AuthController extends Controller
 
             session()->save();
 
-            return redirect('/test');
+            return redirect('/test')->withCookie(cookie('auth_token', $token, 60));
+
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => $e->getMessage(),
