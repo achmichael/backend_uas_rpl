@@ -4,6 +4,12 @@
     </IfModule>
 
     RewriteEngine On
+    # Jika bukan HTTPS
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    # Dan jika bukan localhost
+    RewriteCond %{HTTP_HOST} !^localhost
+    # Redirect ke HTTPS
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .

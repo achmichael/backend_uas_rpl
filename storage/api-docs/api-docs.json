@@ -2,8 +2,14 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Talent Bridge API",
+        "description": "Talent Bridge API Khusus untuk internal developer Talent Bridge API",
         "version": "1.0.0"
     },
+    "servers": [
+        {
+            "url": "api/documentation"
+        }
+    ],
     "paths": {
         "/api/login": {
             "post": {
