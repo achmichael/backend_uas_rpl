@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Helpers\UUID;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use App\Helpers\UUID;
+
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -38,6 +39,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
+     *
      */
     protected function casts(): array
     {
@@ -68,7 +70,18 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
 
-    public function self(){
-        return $this->belongsToMany(User::class, 'friendships','user_id')
+    public function friendofmine(){
+        return $this->belongsToMany(User::class, 'friendships','user_id','friend_id')
+                    ->withPivot('status')->withTimestamps;
+    }
+
+    public function myfriend(){
+        return $this->belongsToMany(User::class,'friendships','friend_id','user_id')
+                    ->withPivot('status')->withTimestamps;
+    }
+
+    public function friend(){
+        return $this->self()->wherePivot('status', 'accepted')->get()
+                    ->merge ($this->friend()->wherePivot('status', 'accepted')->get());
     }
 }
