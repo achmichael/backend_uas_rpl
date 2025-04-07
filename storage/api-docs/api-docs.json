@@ -95,12 +95,443 @@
                     }
                 }
             }
+        },
+        "/api/companies": {
+            "get": {
+                "tags": [
+                    "Companies"
+                ],
+                "summary": "Get list of companies",
+                "operationId": "80eb39cf3f8d7b480171fea2f33d6060",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Search query for company name",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of companies",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "succes": {
+                                            "type": "string",
+                                            "example": "succes"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Company"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Companies"
+                ],
+                "summary": "Create a new company",
+                "operationId": "6f8e0dcb89b24ff801d0067817c1d77a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "image",
+                                    "addres",
+                                    "phone",
+                                    "email",
+                                    "website",
+                                    "founded"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Acme Corporation"
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "example": "company_image.jpg"
+                                    },
+                                    "addres": {
+                                        "type": "string",
+                                        "example": "123 Main Street"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "123456789"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "info@acme.com"
+                                    },
+                                    "website": {
+                                        "type": "string",
+                                        "example": "https://acme.com"
+                                    },
+                                    "founded": {
+                                        "type": "integer",
+                                        "example": 2000
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Company created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "succes"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Company"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "massage": {
+                                            "type": "string"
+                                        },
+                                        "error": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/companies/check/{id}": {
+            "get": {
+                "tags": [
+                    "Companies"
+                ],
+                "summary": "Check if a company exists",
+                "operationId": "d61a91e666e15d58b30effd6072d5cf7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Company ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Company found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "succes": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Company"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Company not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "succes": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "massage": {
+                                            "type": "string",
+                                            "example": "company is nothing beb"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/companies/{id}": {
+            "put": {
+                "tags": [
+                    "Companies"
+                ],
+                "summary": "Update a company",
+                "operationId": "c125e6ebfb9c7669666225b619092333",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Company ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "image",
+                                    "addres",
+                                    "phone",
+                                    "email",
+                                    "website",
+                                    "founded"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Acme Corporation Updated"
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "example": "company_image_updated.jpg"
+                                    },
+                                    "addres": {
+                                        "type": "string",
+                                        "example": "456 New Street"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "987654321"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "new@acme.com"
+                                    },
+                                    "website": {
+                                        "type": "string",
+                                        "example": "https://acme-updated.com"
+                                    },
+                                    "founded": {
+                                        "type": "integer",
+                                        "example": 2001
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Company updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "succes"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Company"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Company not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "massage": {
+                                            "type": "string",
+                                            "example": "company apa sih yang lagi di cari"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "massage": {
+                                            "type": "string"
+                                        },
+                                        "error": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Companies"
+                ],
+                "summary": "Delete a company",
+                "operationId": "92d84763842205e867d5bc5867b5f812",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Company ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Company deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string",
+                                            "example": "succes"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Company"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Company not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "massage": {
+                                            "type": "string",
+                                            "example": "company is nothing"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Company": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Acme Corporation"
+                    },
+                    "image": {
+                        "type": "string",
+                        "example": "company_image.jpg"
+                    },
+                    "addres": {
+                        "type": "string",
+                        "example": "123 Main Street"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "123456789"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "info@acme.com"
+                    },
+                    "website": {
+                        "type": "string",
+                        "example": "https://acme.com"
+                    },
+                    "founded": {
+                        "type": "integer",
+                        "example": 2000
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    }
+                },
+                "type": "object"
+            }
         }
     },
     "tags": [
         {
             "name": "Auth",
             "description": "Auth"
+        },
+        {
+            "name": "Companies",
+            "description": "Data terkait company"
         }
     ]
 }
