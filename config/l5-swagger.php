@@ -8,12 +8,11 @@ return [
                 'title' => 'Talent Bridge API',
                 'description' => 'Talent Bridge API Documentation that will be used for development and testing our application',
                 'version' => '1.0.0',
-                'base_path' => env('L5_SWAGGER_BASE_PATH', null),
             ],
             'routes' => [
                 /*
                  * Route for accessing api documentation interface
-                 */
+                */
                 'api' => 'api/documentation',
             ],
             'paths' => [
@@ -57,7 +56,6 @@ return [
              * Route for accessing parsed swagger annotations.
              */
             'docs' => 'docs',
-            'api' => 'docs/api-docs.json',
             /*
              * Route for Oauth2 authentication callback.
              */
