@@ -1,7 +1,3 @@
-@php
-    \Log::info('Session ID:', [session()->getId()]);
-    \Log::info('CSRF Token:', [csrf_token()]);
-@endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -56,34 +52,6 @@
             @endif
         </header>
         <div class="flex items-center justify-center w-full transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0">
-            <form action="{{ route('register') }}" method="POST" class="bg-white dark:bg-[#161615] p-6 rounded-lg shadow-md w-full max-w-md">
-                @csrf
-                <div class="mb-4">
-                    <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Username</label>
-                    <input type="text" name="username" id="username" value="Michael2132" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
-                </div>
-                <div class="mb-4">
-                    <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-                    <input type="email" name="email" id="email" value="achmadmicha12l202233@gmail.com" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
-                </div>
-                <div class="mb-4">
-                    <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
-                    <input type="password" name="password" id="password" value="gabut123" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
-                </div>
-                <div class="mb-4">
-                    <label for="password_confirmation" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Confirm Password</label>
-                    <input type="password" name="password_confirmation" id="password_confirmation" value="gabut123" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
-                </div>
-                <div class="mb-4">
-                    <label for="role_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Role ID</label>
-                    <input type="number" name="role_id" id="role_id" value="2" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
-                </div>
-                <div>
-                    <button type="submit" class="w-full bg-indigo-600 text-black py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                        Register
-                    </button>
-                </div>
-            </form>
             <main class="flex max-w-[335px] w-full flex-col-reverse lg:max-w-4xl lg:flex-row">
                 <div class="text-[13px] leading-[20px] flex-1 p-6 pb-12 lg:p-20 bg-white dark:bg-[#161615] dark:text-[#EDEDEC] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] rounded-bl-lg rounded-br-lg lg:rounded-tl-lg lg:rounded-br-none">
                     <h1 class="mb-1 font-medium">Let's get started</h1>
@@ -302,14 +270,6 @@
                     <div class="absolute inset-0 rounded-t-lg lg:rounded-t-none lg:rounded-r-lg shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d]"></div>
                 </div>
             </main>
-            <form action="/register" method="post">
-                @csrf
-                <input type="text" class="bg-white" name="username" placeholder="insert username"> <br>
-                <input type="email" class="bg-white" name="email" placeholder="insert email"> <br>
-                <input type="password" class="bg-white" name="password" placeholder="password"> <br>
-                <input type="number" class="bg-white" name="role_id" placeholder="id"><br>
-                <button type="submit" class="bg-white">submit</button>
-            </form>
         </div>
 
         @if (Route::has('login'))
