@@ -1,18 +1,20 @@
 <?php
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\JobController;
-use App\Http\Controllers\API\PostController;
-use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\CatalogController;
+use App\Http\Controllers\API\CertificateController;
 use App\Http\Controllers\API\CompanyController;
 use App\Http\Controllers\API\ContractController;
-use App\Http\Controllers\API\LocationController;
-use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\FreelancerController;
+use App\Http\Controllers\API\JobController;
+use App\Http\Controllers\API\LocationController;
+use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\PortofolioController;
-use App\Http\Controllers\API\CertificateController;
+use App\Http\Controllers\API\PostController;
+use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\UserProfileController;
+use App\Http\Controllers\API\UserSkillController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function (Request $request) {
     return $request->user();
@@ -92,7 +94,7 @@ Route::prefix('posts')->group(function () {
     Route::get('/freelancer/{id}', [PostController::class, 'recommendFreelancer']);
 });
 
-Route::prefix('freelancers')->group(function (){
+Route::prefix('freelancers')->group(function () {
     Route::get('/', [FreelancerController::class, 'index']);
     Route::get('/{id}', [FreelancerController::class, 'show']);
     Route::post('/', [FreelancerController::class, 'store']);
@@ -105,7 +107,19 @@ Route::prefix('contracts')->group(function () {
     Route::get('/{id}', [ContractController::class, 'show']);
 });
 
+Route::prefix('payments')->group(function (){
+    Route::post('/pay', [PaymentController::class, 'getSnapToken']);
+    // this route can be used to check the payment status after the payment is made, and can be configured in the payment provider 
+    Route::post('/callback', [PaymentController::class, 'handleCallback']);
+});
+
 Route::prefix('users')->group(function () {
+    Route::prefix('skills')->group(function () {
+        Route::get('/', [UserSkillController::class, 'index']);
+        Route::post('/', [UserSkillController::class, 'store']);
+        Route::put('/{id}', [UserSkillController::class, 'update']);
+        Route::delete('/{id}', [UserSkillController::class, 'destroy']);
+    });
     Route::put('/{id}', [UserController::class, 'update']);
     Route::get('/{id}', [UserController::class, 'show']);
 });
@@ -113,7 +127,7 @@ Route::prefix('users')->group(function () {
 // Route fallback execute when route not found in routes in api.php
 Route::fallback(function () {
     return response()->json([
-        'status' => 'error',
+        'status'  => 'error',
         'message' => 'Route not found',
     ], 404);
 });

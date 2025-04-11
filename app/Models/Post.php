@@ -27,9 +27,9 @@ class Post extends Model
         return $this->hasMany(Application::class);
     }
 
-    public function contract()
+    public function contracts()
     {
-        return $this->hasOne(Contract::class);
+        return $this->morphOne(Contract::class, 'contract_type');
     }
 
     public function reviews()
