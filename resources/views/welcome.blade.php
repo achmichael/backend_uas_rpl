@@ -3,14 +3,12 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
         <title>TalentBridge API</title>
-
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
         <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
-        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Pragma" content="no-cache">   
         <meta http-equiv="Expires" content="Sat, 01 Jan 2000 00:00:00 GMT">
         <!-- Styles / Scripts -->
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))

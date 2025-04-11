@@ -9,12 +9,6 @@ return [
                 'description' => 'Talent Bridge API Documentation that will be used for development and testing our application',
                 'version' => '1.0.0',
             ],
-            'routes' => [
-                /*
-                 * Route for accessing api documentation interface
-                */
-                'api' => 'api/documentation',
-            ],
             'paths' => [
                 /*
                  * Edit to include full URL in ui for assets
