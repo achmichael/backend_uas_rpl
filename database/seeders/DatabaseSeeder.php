@@ -90,7 +90,6 @@ class DatabaseSeeder extends Seeder
         Contract::create([
             'contract_type' => Job::class,
             'contract_type_id' => $job->id,
-            'client_id' => $user->id,
             'provider_id' => $user->id,
             'contract_date' => now(),
             'status' => 'active',
