@@ -157,6 +157,7 @@ class CompanyController extends Controller
      *     )
      * )
      */
+    
     public function show($id)
     {
         $company = Company::with('user')->find($id);
