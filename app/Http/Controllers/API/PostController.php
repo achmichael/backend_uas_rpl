@@ -315,14 +315,11 @@ class PostController extends Controller
     {
         $post = Post::find($id);
         if (! $post) {
-            return response()->json(['message' => 'Post not found'], 404);
+            return error('post not found',404);
         }
 
         $freelancers = $postService->matchingFreelancer($post);
-        return response()->json([
-            'status' => 'success',
-            'data'   => $freelancers,
-        ]);
+        return success($post,'success get post',200);
     }
 
     /**
@@ -361,14 +358,10 @@ class PostController extends Controller
     {
         $post = Post::find($id);
         if (! $post) {
-            return response()->json([
-                'message' => 'Post not found',
-            ], 404);
+            return error('post not found',404);
         }
         $post->delete();
-        return response()->json([
-            'status'  => 'success',
-            'message' => 'Post deleted successfully',
-        ]);
+        return success($post, 'success delete data',422);
     }
+
 }

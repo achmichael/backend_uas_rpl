@@ -12,7 +12,7 @@ use Illuminate\Validation\ValidationException;
  *     name="Locations",
  *     description="Data terkait lokasi pengguna"
  * )
- * 
+ *
  * @OA\Schema(
  *     schema="Location",
  *     type="object",
@@ -81,15 +81,9 @@ class LocationController extends Controller
         $data = $request->all();
         $data['user_id'] = auth()->id;
         $location = Location::create($data);
-        return response()->json([
-            'succes' => true,
-            'data'   => $location,
-        ]);
+        return success($location,'create location successfully',201);
     }catch(ValidationException $e){
-        return response()->json([
-            'message'=> $e->getMessage(),
-            'errors' => $e->errors(),
-        ],422);
+        return errorValidation($e->getMessage(),$e->errors(),422);
     }
     }
 
@@ -157,21 +151,13 @@ class LocationController extends Controller
             ]);
             $location = Location::find($id);
             if(! $location){
-            return response()->json([
-                'message' => 'Location not found',
-            ], 404);
+            return error('location not found',404);
             }
 
         $location->update($request->all());
-        return response()->json([
-            'status' => 'success',
-            'data'   => $location,
-        ]);
+        return success($location,'location update successfully');
         }catch(ValidationException $e){
-        return response()->json([
-            'message' => $e->getMessage(),
-            'errors'  => $e->errors(),
-        ], 422);
+        return errorValidation($e->getMessage(),$e->errors(),422);
      }
     }
 
@@ -205,17 +191,14 @@ class LocationController extends Controller
      * )
      */
 
+
+     
     public function delete($id){
         $location = Location::find($id);
         if(! $location){
-            return response()->json([
-                'message'   => 'location with that id is empty'
-            ]);
+            return error('location with that id is empty');
         }
         $location->delete();
-        return response()->json([
-            'status'  => 'success',
-            'message' => 'Location deleted successfully',
-        ]);
+        return success($location,'location delete successfully');
     }
 }

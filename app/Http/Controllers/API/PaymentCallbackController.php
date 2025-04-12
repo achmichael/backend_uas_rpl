@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Midtrans\Config;
 
 class PaymentCallbackController extends Controller
@@ -12,7 +13,7 @@ class PaymentCallbackController extends Controller
     {
         try {
             $callback = $request->all();
-            
+
             Config::$serverKey    = config('midtrans.serverKey');
             Config::$isProduction = config('midtrans.isProduction');
             Config::$isSanitized  = config('midtrans.isSanitized');
@@ -25,10 +26,7 @@ class PaymentCallbackController extends Controller
             $fraudStatus = $callback['fraud_status'];
             $payment = \App\Models\Payment::where('transaction_id', $transactionId)->first();
             if (! $payment) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Payment not found',
-                ], 404);
+                return error('payment not found',404);
             }
 
             if ($status == 'capture') {
@@ -65,15 +63,10 @@ class PaymentCallbackController extends Controller
                 ]);
             }
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Payment notification received',
-            ]);
-        }catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], 500);
+            return success($payment,'Payment notification received',201);
+
+        }catch (ValidationException $e) {
+            return errorValidation($e->getMessage(),$e->errors(),500);
         }
     }
 }
