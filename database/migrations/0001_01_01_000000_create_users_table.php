@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email', 50)->unique();
             $table->string('password', 200);
             $table->unsignedBigInteger('role_id');
-            $table->string('phone_number', 15)->nullable();
+            $table->string('phone_nummber', 15)->nullable();
             $table->string('profile_picture', 100)->nullable();
             $table->rememberToken();
             $table->boolean('is_verified')->default(false);

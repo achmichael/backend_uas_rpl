@@ -17,7 +17,7 @@ return new class extends Migration
             $table->uuid('post_id');
             $table->string('name');
             $table->string('image');
-            $table->string('addres');
+            $table->string('address');
             $table->string('phone');
             $table->string('email');
             $table->string('website');

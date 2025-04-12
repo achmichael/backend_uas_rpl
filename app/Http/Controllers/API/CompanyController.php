@@ -111,7 +111,7 @@ class CompanyController extends Controller
             $request->validate([
                 'name'    => 'required|string',
                 'image'   => 'required|string',
-                'addres'  => 'required|string',
+                'address'  => 'required|string',
                 'phone'   => 'required|string',
                 'email'   => 'required|email',
                 'website' => 'required|string',
@@ -157,7 +157,7 @@ class CompanyController extends Controller
      *     )
      * )
      */
-    
+
     public function show($id)
     {
         $company = Company::with('user')->find($id);
@@ -237,7 +237,7 @@ class CompanyController extends Controller
             $request->validate([
                 'name'    => 'required|string',
                 'image'   => 'required|string',
-                'addres'  => 'required|string',
+                'address'  => 'required|string',
                 'phone'   => 'required|numeric',
                 'email'   => 'required|email',
                 'website' => 'required|string',
