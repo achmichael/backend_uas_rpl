@@ -61,7 +61,7 @@ class PostController extends Controller
             return $this->search($request);
         }
 
-        $posts = Post::with(['category', 'user', 'reviews'])->get();
+        $posts = Post::with(['category', 'user', 'reviews', 'level'])->get();
         return response()->json([
             'status' => 'success',
             'data'   => $posts,

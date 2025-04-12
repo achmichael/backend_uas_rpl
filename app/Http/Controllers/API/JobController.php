@@ -65,7 +65,7 @@ class JobController extends Controller
             return $this->search($request);
         }
         DB::enableQueryLog();
-        $jobs = Job::with(['post'])->get();
+        $jobs = Job::with(['post.level'])->get();
         Log::info('Query log', DB::getQueryLog());
         return response()->json([
             'succes' => 'succes',
