@@ -100,7 +100,7 @@ class DatabaseSeeder extends Seeder
             'post_id' => $post->id,
             'name'    => 'bossware',
             'image'   => 'https://source.unsplash.com/random',
-            'addres'  => 'jl gajayana malang, jawa-timur, indonesia',
+            'address'  => 'jl gajayana malang, jawa-timur, indonesia',
             'phone'   => '082241370247',
             'email'   => 'bossware@gmail.com',
             'website' => 'bossware.com',
