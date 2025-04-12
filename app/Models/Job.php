@@ -19,4 +19,9 @@ class Job extends Model
         return $this->belongsTo(Post::class, 'id_post');
     }
 
+    public function contract()
+    {
+        return $this->morphOne(Contract::class, 'contract_type');
+    }
+
 }

@@ -11,18 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('certificates', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+        Schema::create('user_skills', function (Blueprint $table) {
+            $table->id();
             $table->uuid('user_id');
-            $table->string('certificate_name');
-            $table->string('expiration_date');
-            $table->string('category');
-            $table->string('status');
-            $table->text('file_path');
-            $table->text('description');
+            $table->unsignedBigInteger('skill_id');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('skill_id')->references('id')->on('skills')->onDelete('cascade');
         });
     }
 
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('certificates');
+        Schema::dropIfExists('user_skills');
     }
 };

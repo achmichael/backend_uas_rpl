@@ -87,21 +87,12 @@ class CertificateController extends Controller
             $data['user_id'] = auth()->id;
             $certificate     = Certificate::create($data);
             if (! $certificate) {
-                return response()->json([
-                    'status'  => false,
-                    'message' => 'invalid add certificate',
-                ]);
+                return error('invalid add certificate', 400);
             }
-            return response()->json([
-                'status' => true,
-                'data'   => $certificate,
-            ]);
+            return success($certificate, 'Success add certificate', 200);
 
         } catch (ValidationException $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'errors'  => $e->errors(),
-            ]);
+            return errorValidation($e->getMessage(), $e->errors());
         }
 
     }
@@ -140,15 +131,10 @@ class CertificateController extends Controller
         {
             $certificate = Certificate::find($id);
             if (! $certificate) {
-                return response()->json([
-                    'massage' => 'certificate is nothing',
-                ]);
+                return error('certificate is nothing', 404);
             }
             $certificate->delete();
-            return response()->json([
-                'status'  => 'succes',
-                'message' => 'delete succesfully',
-            ]);
+            return success($id, 'delete succesfully', 200);
         }
     }
 
@@ -217,21 +203,12 @@ class CertificateController extends Controller
             $certificate = Certificate::find($id);
 
             if (! $certificate) {
-                return response()->json([
-                    'status'  => false,
-                    'message' => 'invalid add certificate',
-                ]);
+                return error('Certificate not found', 404);
             }
             $certificate->update($request->all());
-            return response()->json([
-                'ststus' => 'succes',
-                'data'   => $certificate,
-            ]);
+            return success($certificate, 'Certificate updated successfully', 200);
         } catch (ValidationException $e) {
-            return response()->json([
-                'massage' => $e->getMessage(),
-                'error'   => $e->errors(),
-            ], 422);
+            return errorValidation($e->getMessage(), $e->errors(), 422);
         }
     }
 }

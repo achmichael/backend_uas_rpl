@@ -18,11 +18,13 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \Illuminate\Session\Middleware\AuthenticateSession::class,
+            \Illuminate\Http\Middleware\TrustProxies::class,
         ]);
 
         $middleware->group('api', [
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \Illuminate\Http\Middleware\TrustProxies::class,
         ]);
 
         $middleware->alias([

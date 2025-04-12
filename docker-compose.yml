@@ -2,8 +2,11 @@ services:
   frankenphp:
     build:
       context: .
-    entrypoint: php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=8000 --workers=1 --max-requests=1
+    entrypoint: php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=8000
     ports:
       - "8000:8000"
+    environment:
+      - HTTPS=true
+      - APP_URL=https://api-backendrpl.achmichael.my.id
     volumes:
       - .:/app
