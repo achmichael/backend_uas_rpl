@@ -12,6 +12,11 @@ class Post extends Model
 
     protected $guarded = [];
 
+    public function level ()
+    {
+        return $this->belongsTo(Level::class);
+    }
+    
     public function user()
     {
         return $this->belongsTo(User::class, 'posted_by');

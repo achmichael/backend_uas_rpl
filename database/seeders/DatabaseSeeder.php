@@ -16,7 +16,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\UserProfile;
 use App\Models\Certificate;
-
+use App\Models\Level;
 
 class DatabaseSeeder extends Seeder
 {
@@ -64,10 +64,28 @@ class DatabaseSeeder extends Seeder
             // 'description' => 'Create a website or web application for a business or personal use case scenario, with a focus on functionality, user experience, and performance. and great backend service to make application is rapidly',
         ]);
 
+        Level::create([
+            'name' => 'Beginner',
+            'description' => 'Beginner level with basic knowledge and skills in the field.',
+        ]);
+
+        Level::create([
+            'name' => 'Entry',
+            'description' => 'Entry level with some experience and skills in the field.',
+        ]);
+
+        Level::create([
+            'name' => 'Expert',
+            'description' => 'Expert level with good knowledge and skills in the field.',
+        ]);
+        
+
+
         $post = Post::create([
             'title' => 'Web Development',
             'description' => 'Create a website or web application for a business or personal use case scenario, with a focus on functionality, user experience, and performance. and great backend service to make application is rapidly',
             'price' => 1000000,
+            'level_id' => Level::pluck('id')->random(),
             'required_skills' => ["PHP", "Laravel", "JavaScript", "VueJS"],
             'min_experience_years' => 2,
             'category_id' => $category->id,
@@ -94,7 +112,8 @@ class DatabaseSeeder extends Seeder
             'contract_date' => now(),
             'status' => 'active',
         ]);
-        
+
+       
         $company = Company::create([
             'user_id' => $user->id,
             'post_id' => $post->id,
