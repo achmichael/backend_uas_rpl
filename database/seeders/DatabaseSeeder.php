@@ -95,7 +95,7 @@ class DatabaseSeeder extends Seeder
             'status' => 'active',
         ]);
         
-        $company = Company::create([
+        Company::create([
             'user_id' => $user->id,
             'post_id' => $post->id,
             'name'    => 'bossware',
@@ -108,27 +108,27 @@ class DatabaseSeeder extends Seeder
         ]);
 
 
-        $profile = UserProfile::create([
+        UserProfile::create([
             'user_id'           => $user->id,
             'full_name'         => 'Naufal Maulana Rafiq',
             'portofolio_url'    => 'https://namara.dev/portofolio',
             'bio'               => 'Full-stack web developer dengan pengalaman 3+ tahun dalam membangun aplikasi berbasis Laravel dan React. Siap membantu membangun solusi digital untuk bisnis Anda.',
         ]);
 
-        $catalog = Catalog::create([
+        Catalog::create([
             'user_id'       => $user->id,
             'catalog_name'  => 'Jasa Pembuatan Website Profesional',
             'price'         => 1500000,
             'description'   => 'Layanan pembuatan website custom untuk bisnis, portofolio, atau toko online. Desain responsif dan SEO friendly. Estimasi pengerjaan 5-7 hari.',
         ]);
 
-        $portofolio = Portofolio::create([
+        Portofolio::create([
             'user_id'   => $user->id,
             'title'     => 'my portofolio',
             'url'       => 'my-portofolio.com',
         ]);
 
-        $location = Location::create([
+        Location::create([
             'user_id'       => $user->id,
             'accuracy'      => 5,
             'latitude'      => -6.2,
@@ -149,12 +149,5 @@ class DatabaseSeeder extends Seeder
             'description'       => 'Certificate for completing Laravel course',
             'status'            => 'active',
         ]);
-
-
-
-
-
-
-
     }
 }
