@@ -65,10 +65,7 @@ class CompanyController extends Controller
         DB::enableQueryLog();
         $company = Company::with('user')->get();
         Log::info('Query log', DB::getQueryLog());
-        return response()->json([
-            'succes' => 'succes',
-            'data'   => $company,
-        ]);
+        return success($company, 'success get all companies', 200);
     }
 
     /**
@@ -125,15 +122,9 @@ class CompanyController extends Controller
             $data['user_id'] = auth()->id;
             $company         = Company::create($data);
 
-            return response()->json([
-                'status' => 'succes',
-                'data'   => $company,
-            ]);
+            return success($company, 'success create company', 200);
         } catch (ValidationException $e) {
-            return response()->json([
-                'massage' => $e->getMessage(),
-                'error'   => $e->errors(),
-            ]);
+            return errorValidation($e->getMessage(), $e->errors(), 422);
         }
     }
     /**
@@ -166,19 +157,13 @@ class CompanyController extends Controller
      *     )
      * )
      */
-    public function check($id)
+    public function show($id)
     {
         $company = Company::with('user')->find($id);
         if (! $company) {
-            return response()->json([
-                'succes'  => false,
-                'massage' => 'company is nothing beb',
-            ]);
+            return error('company is nothing', 404);
         }
-        return response()->json([
-            'succes ' => true,
-            'data'    => $company,
-        ]);
+        return success($company, 'success get company', 200);
     }
 
     public function search(Request $request)
@@ -188,16 +173,10 @@ class CompanyController extends Controller
             ->get();
 
         if ($company->isEmpty()) {
-            return response()->json([
-                'status' => 'error',
-                'data'   => 'company not found',
-            ]);
+            return error('company not found', 404);
         }
 
-        return response()->json([
-            'status' => 'succes',
-            'data'   => $company,
-        ]);
+        return success($company, 'success get company', 200);
     }
 
     /**
@@ -266,21 +245,13 @@ class CompanyController extends Controller
 
             $company = Company::find($id);
             if (! $company) {
-                return response()->json([
-                    'massage' => 'company apa sih yang lagi di cari',
-                ], 404);
+                return error('company not found', 404);
             }
 
             $company->update($request->all());
-            return response()->json([
-                'status' => 'succes',
-                'data'   => $company,
-            ]);
+            return success($company, 'success update company', 200);
         } catch (ValidationException $e) {
-            return response()->json([
-                'massage' => $e->getMessage(),
-                'error'   => $e->errors(),
-            ], 422);
+            return errorValidation($e->getMessage(), $e->errors(), 422);
         }
     }
 
@@ -318,31 +289,10 @@ class CompanyController extends Controller
     {
         $company = Company::find($id);
         if (! $company) {
-            return response()->json([
-                'massage' => 'company is nothing',
-            ]);
+            return error('company is nothing', 404);
         }
         $company->delete();
-        return response()->json([
-            'status' => 'succes',
-            'data'   => $company,
-        ]);
-    }
-
-    public function show($id)
-    {
-        $company = Company::with('user', 'job.post')->findOrFail($id);
-        if (! $company) {
-            return response()->json([
-                'succes'  => false,
-                'messege' => 'company not found',
-            ], 404);
-        }
-
-        return response()->json([
-            'succes' => true,
-            'data'   => $company,
-        ]);
+        return success($id, 'delete succesfully', 200);
     }
     
 }

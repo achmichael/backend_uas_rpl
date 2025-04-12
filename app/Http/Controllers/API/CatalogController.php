@@ -1,10 +1,9 @@
 <?php
-
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use App\Models\Catalog;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -12,7 +11,7 @@ use Illuminate\Validation\ValidationException;
  *     name="Catalogs",
  *     description="Data terkait katalog produk atau layanan pengguna"
  * )
- * 
+ *
  * @OA\Schema(
  *     schema="Catalog",
  *     type="object",
@@ -67,33 +66,25 @@ class CatalogController extends Controller
      *     )
      * )
      */
-    public function create(Request $request){
-        try{
+    public function create(Request $request)
+    {
+        try {
             $request->validate([
-                'catalog_name'  => 'required',
-                'price'         => 'required',
-                'description'   => 'required',
+                'catalog_name' => 'required',
+                'price'        => 'required',
+                'description'  => 'required',
             ]);
-            $data = $request->all();
+            $data            = $request->all();
             $data['user_id'] = auth()->id;
-            $catalog = Catalog::create($data);
+            $catalog         = Catalog::create($data);
 
-            if(! $catalog){
-                return response()->json([
-                    'Success'   => false,
-                    'message'   => 'invalid create catalog',
-                ]);
+            if (! $catalog) {
+                return error('invalid create catalog', 404);
             }
 
-            return response()->json([
-                'succes'    => true,
-                'data'  => $catalog,
-            ]);
-        }catch(ValidationException $e){
-            return response()->json([
-                'message'       => $e->getMessage(),
-                'errors'        => $e->errors(),
-            ]);
+            return success($catalog, 'Success create catalog', 201);
+        } catch (ValidationException $e) {
+            return errorValidation($e->getMessage(), $e->errors(), 422);
         }
 
     }
@@ -144,31 +135,26 @@ class CatalogController extends Controller
      *     )
      * )
      */
-    public function update(Request $request,$id){
-        try{
+    public function update(Request $request, $id)
+    {
+        try {
             $request->validate([
-                'catalog_name'  => 'required',
-                'price'         => 'required',
-                'description'   => 'required',
+                'catalog_name' => 'required',
+                'price'        => 'required',
+                'description'  => 'required',
             ]);
 
             $catalog = Catalog::find($id);
 
-            if(! $catalog){
-                return response()->json([
-                    'message'   => 'catalog not found',
-                ]);
+            if (! $catalog) {
+                return error('catalog not found', 404);
             }
+
             $catalog->update();
-            return response()->json([
-                'status'    => 'succes update',
-                'data'  => $id,
-            ]);
-        }catch(ValidationException $e){
-            return response()->json([
-                'message'       => $e->getMessage(),
-                'errors'        => $e->errors(),
-            ]);
+
+            return success($id, 'succes update catalog', 200);
+        } catch (ValidationException $e) {
+            return errorValidation($e->getMessage(), $e->errors(), 422);
         }
     }
 
@@ -201,17 +187,13 @@ class CatalogController extends Controller
      *     )
      * )
      */
-    public function delete($id){
+    public function delete($id)
+    {
         $catalog = Catalog::find($id);
-        if(! $catalog){
-            return response()->json([
-                'message'   => 'catalog not found',
-            ]);
+        if (! $catalog) {
+            return error('catalog not found', 404);
         }
         $catalog->delete();
-        return response()->json([
-            'status'  => 'success',
-            'message' => 'Catalog deleted successfully',
-        ]);
+        return success($id, 'Catalog deleted successfully', 200);
     }
 }

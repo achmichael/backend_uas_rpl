@@ -42,3 +42,11 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 })->middleware(['auth', 'signed'])->name('verification.verify');
 });
 
+
+
+Route::fallback(function () {
+    return response()->json([
+        'success' => false,
+        'message' => 'Not Found',
+    ], 404);
+});

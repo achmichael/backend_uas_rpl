@@ -46,7 +46,6 @@ Route::prefix('portofolios')->group(function () {
 
 Route::prefix('user_profiles')->group(function () {
     Route::post('/', [UserProfileController::class, 'create']);
-
 });
 
 Route::prefix('certificates')->group(function () {
@@ -65,7 +64,6 @@ Route::prefix('locations')->group(function () {
     Route::post('/', [LocationController::class, 'create']);
     Route::put('/{id}', [LocationController::class, 'update']);
     Route::delete('/{id}', [LocationController::class, 'delete']);
-
 });
 
 Route::prefix('jobs')->group(function () {

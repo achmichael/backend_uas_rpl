@@ -3,25 +3,17 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Application;
+
 use App\Models\catalog;
 use App\Models\Category;
 use App\Models\Company;
 use App\Models\Contract;
-use App\Models\Freelancer;
-use App\Models\Friend_request;
-use App\Models\Friendship;
 use App\Models\Job;
 use App\Models\Location;
-use App\Models\Milestone;
-use App\Models\Payment;
 use App\Models\Portofolio;
 use App\Models\Post;
-use App\Models\Review;
 use App\Models\Role;
-use App\Models\Skill;
 use App\Models\User;
-use App\Models\UserActivityLog;
 use App\Models\UserProfile;
 use App\Models\Certificate;
 
@@ -95,6 +87,15 @@ class DatabaseSeeder extends Seeder
             'system'              => 'wfh',
         ]);
 
+        Contract::create([
+            'contract_type' => Job::class,
+            'contract_type_id' => $job->id,
+            'client_id' => $user->id,
+            'provider_id' => $user->id,
+            'contract_date' => now(),
+            'status' => 'active',
+        ]);
+        
         $company = Company::create([
             'user_id' => $user->id,
             'post_id' => $post->id,
@@ -149,7 +150,6 @@ class DatabaseSeeder extends Seeder
             'description'       => 'Certificate for completing Laravel course',
             'status'            => 'active',
         ]);
-
 
 
 

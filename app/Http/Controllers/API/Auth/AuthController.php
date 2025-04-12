@@ -54,26 +54,17 @@ class AuthController extends Controller
             } elseif ($request->filled('username')) {
                 $credentials = ['username' => $request->username, 'password' => $request->password];
             } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Please provide either username or email.',
-                ], 400);
+                return error('Email or username is required.', 400);
             }
 
             if (! Auth::attempt($credentials, $remember)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Login failed.',
-                ], 401);
+                return error('Invalid credentials.', 401);
             }
             
             $user = Auth::user();
 
             if (! $user->is_verified) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Please verify your email address.',
-                ], 403);
+                return error('Email not verified, please verified your email', 401);
             }
 
             Auth::login($user);
@@ -93,12 +84,8 @@ class AuthController extends Controller
             session()->save();
 
             return redirect('/test')->withCookie(cookie('auth_token', $token, 60));
-
         } catch (ValidationException $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'errors'  => $e->errors(),
-            ], Response::HTTP_UNAUTHORIZED);
+            return errorValidation($e->getMessage(), $e->errors(), 422);
         }
     }
 
@@ -107,7 +94,7 @@ class AuthController extends Controller
         $request->user()->currentAccessToken()->delete();
         return response()->json([
             'message' => 'Logout Success',
-        ])->cookie('auth_token', '', -1, '/', '', true, true);
+        ])->cookie('auth_token', '', -1, '/', '', true, false);
     }
 
     public function me(Request $request)
@@ -180,10 +167,7 @@ class AuthController extends Controller
             // ])->cookie('auth_token', $token, 60 * 24, '/', '', true, true, false, 'Lax');
             return redirect('/test')->withCookie(cookie('auth_token', $token, 60));
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'errors'  => $e->errors(),
-            ], 422);
+            return errorValidation($e->getMessage(), $e->errors(), 422);
         }
     }
 }
