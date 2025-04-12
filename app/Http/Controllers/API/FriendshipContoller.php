@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class FriendshipContoller extends Controller
 {
     public function addfriend($friendId){
-        $user = auth()->user();
+        $user = auth()->user;
 
-        $exists = \DB::table('friendships')->where(function($query) use ($user, $friendId) {
+        $exists = DB::table('friendships')->where(function($query) use ($user, $friendId) {
             $query->where('user_id', $user->id)
                   ->where('friend_id', $friendId);
         })->orWhere('friendships')->where(function ($query) use ($user,$friendId){
@@ -24,7 +25,7 @@ class FriendshipContoller extends Controller
             ]);
         }
 
-        \DB::table('friendship')->insert([
+        DB::table('friendship')->insert([
             'user_id'   => $user->id,
             'friend_id' => $friendId,
             'status'    => 'pending',
@@ -36,9 +37,9 @@ class FriendshipContoller extends Controller
     }
 
     public function accept($friendId){
-        $user = auth()->user();
+        $user = auth()->user;
 
-        \DB::table('friendship')->where([
+        DB::table('friendship')->where([
             'user_id'   => $user->id,
             'friend_id' => $friendId,
         ])->update(['status' => 'accepted']);

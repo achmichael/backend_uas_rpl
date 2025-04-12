@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
             'role_name'   => 'company',
             'description' => 'Company',
         ]);
-
+        
         Role::create([
             'role_name'   => 'freelancer',
             'description' => 'Freelancer',
