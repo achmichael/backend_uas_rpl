@@ -18,9 +18,6 @@ Route::get('/', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/register', [AuthController::class, 'register'])->name('register')->middleware('web');
-Route::post('/login', [AuthController::class, 'login'])->middleware('web');
-
 // with resource to create 7 routes for PostController
 // Route::resource('posts', PostController::class);
 /* HTTP Method	URI	Controller Method	Deskripsi
@@ -44,7 +41,6 @@ Route::prefix('portofolios')->group(function () {
 
 Route::prefix('user_profiles')->group(function () {
     Route::post('/', [UserProfileController::class, 'create']);
-
 });
 
 Route::prefix('certificates')->group(function () {
@@ -84,7 +80,6 @@ Route::prefix('companies')->group(function () {
 
 Route::prefix('posts')->group(function () {
     Route::get('/', [PostController::class, 'index']);
-    Route::get('/search', [PostController::class, 'search']);
     Route::get('/show-post/{id}', [PostController::class, 'show']);
     Route::post('/', [PostController::class, 'store']);
     Route::put('/{id}', [PostController::class, 'update']);

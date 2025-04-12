@@ -51,7 +51,7 @@ class CompanyController extends Controller
      *             @OA\Property(
      *                 property="data",
      *                 type="array",
-     *                 @OA\Items(ref="#/components/schemas/Company")   
+     *                 @OA\Items(ref="#/components/schemas/Company")
      *             )
      *         )
      *     )
@@ -344,5 +344,5 @@ class CompanyController extends Controller
             'data'   => $company,
         ]);
     }
-    
+
 }
