@@ -173,7 +173,6 @@ class ContractController extends Controller
         $request->validate([
             'status' => 'nullable|in:active,completed,terminated',
         ]);
-
         $userId = JWTAuth::parseToken()->authenticate()->id;
         $query  = Contract::query()->with(['post', 'client', 'provider', 'milestones'])->whereHas('client', function ($query) use ($userId) {
             $query->where('user_id', $userId);

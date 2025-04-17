@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Post;
 use App\Services\PostService;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
  * @OA\Tag(
@@ -116,7 +117,7 @@ class PostController extends Controller
                 'category_id'        => 'required|exists:categories,id',
             ]);
             $data            = $request->all();
-            $data['user_id'] = auth()->id;
+            $data['user_id'] = JWTAuth::parseToken()->authenticate()->id;
             $post            = Post::create($data);
 
             return response()->json([
@@ -249,6 +250,7 @@ class PostController extends Controller
                 'number_of_employee' => 'required|integer',
                 'posted_by'          => 'required|exists:users,id',
             ]);
+            
             $post = Post::find($id);
 
             if (! $post) {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Location;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
 
@@ -79,7 +80,7 @@ class LocationController extends Controller
             'altitudeAccuracy' => 'required',
         ]);
         $data = $request->all();
-        $data['user_id'] = auth()->id;
+        $data['user_id'] = JWTAuth::parseToken()->authenticate()->id;
         $location = Location::create($data);
         return response()->json([
             'succes' => true,
