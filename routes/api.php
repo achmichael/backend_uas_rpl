@@ -105,7 +105,7 @@ Route::middleware(['auth:api'])->group(function () {
     
     Route::prefix('payments')->group(function (){
         Route::post('/pay', [PaymentController::class, 'getSnapToken']);
-        // this route can be used to check the payment status after the payment is made, and can be configured in the payment provider 
+        // this route can be used to check the payment status after the payment is made, and can be configured in the payment provider dashboard 
         Route::post('/callback', [PaymentController::class, 'handleCallback']);
     });
     
