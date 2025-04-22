@@ -13,6 +13,7 @@ use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\UserProfileController;
 use App\Http\Controllers\API\UserSkillController;
+use App\Http\Controllers\API\AIController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,6 +35,10 @@ DELETE	/posts/{id}	destroy	Proses hapus data
 
 Route::post('/register', [AuthController::class, 'register'])->name('register')->middleware('web');
 Route::post('/login', [AuthController::class, 'login'])->middleware('web');
+
+Route::prefix('ai')->group(function() {
+    Route::post('/chat', [AIController::class, 'chat']);
+});
 
 Route::middleware(['auth:api'])->group(function () {
     Route::prefix('portofolios')->group(function () {
