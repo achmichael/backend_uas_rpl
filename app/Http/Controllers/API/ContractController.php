@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Contract;
 use App\Rules\RoleIdNot;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
  * @OA\Tag(
@@ -153,5 +154,26 @@ class ContractController extends Controller
         }
 
         return success($contract,'succes get contract',200);
+    }
+
+    public function contractByUser(Request $request)
+    {
+        $request->validate([
+            'status' => 'nullable|in:active,completed,terminated',
+        ]);
+        $userId = JWTAuth::parseToken()->authenticate()->id;
+        $query  = Contract::query()->with(['post', 'client', 'provider', 'milestones'])->whereHas('client', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        })->orWhereHas('provider', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        });
+
+        if ($request->has('status') && $request->status) {
+            $query->where('status', $request->status);
+        }
+
+        $contracts = $query->orderBy('created_at', 'desc')->get();
+
+        return success($contracts, 'Success get contract user', 200);
     }
 }

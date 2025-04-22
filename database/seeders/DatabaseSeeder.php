@@ -16,7 +16,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\UserProfile;
 use App\Models\Certificate;
-
+use App\Models\Level;
 
 class DatabaseSeeder extends Seeder
 {
@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
             'role_name'   => 'company',
             'description' => 'Company',
         ]);
-
+        
         Role::create([
             'role_name'   => 'freelancer',
             'description' => 'Freelancer',
@@ -64,10 +64,28 @@ class DatabaseSeeder extends Seeder
             // 'description' => 'Create a website or web application for a business or personal use case scenario, with a focus on functionality, user experience, and performance. and great backend service to make application is rapidly',
         ]);
 
+        Level::create([
+            'name' => 'Beginner',
+            'description' => 'Beginner level with basic knowledge and skills in the field.',
+        ]);
+
+        Level::create([
+            'name' => 'Entry',
+            'description' => 'Entry level with some experience and skills in the field.',
+        ]);
+
+        Level::create([
+            'name' => 'Expert',
+            'description' => 'Expert level with good knowledge and skills in the field.',
+        ]);
+        
+
+
         $post = Post::create([
             'title' => 'Web Development',
             'description' => 'Create a website or web application for a business or personal use case scenario, with a focus on functionality, user experience, and performance. and great backend service to make application is rapidly',
             'price' => 1000000,
+            'level_id' => Level::pluck('id')->random(),
             'required_skills' => ["PHP", "Laravel", "JavaScript", "VueJS"],
             'min_experience_years' => 2,
             'category_id' => $category->id,
@@ -95,12 +113,12 @@ class DatabaseSeeder extends Seeder
             'status' => 'active',
         ]);
         
-        $company = Company::create([
+        Company::create([
             'user_id' => $user->id,
             'post_id' => $post->id,
             'name'    => 'bossware',
             'image'   => 'https://source.unsplash.com/random',
-            'addres'  => 'jl gajayana malang, jawa-timur, indonesia',
+            'address'  => 'jl gajayana malang, jawa-timur, indonesia',
             'phone'   => '082241370247',
             'email'   => 'bossware@gmail.com',
             'website' => 'bossware.com',
@@ -108,27 +126,27 @@ class DatabaseSeeder extends Seeder
         ]);
 
 
-        $profile = UserProfile::create([
+        UserProfile::create([
             'user_id'           => $user->id,
             'full_name'         => 'Naufal Maulana Rafiq',
             'portofolio_url'    => 'https://namara.dev/portofolio',
             'bio'               => 'Full-stack web developer dengan pengalaman 3+ tahun dalam membangun aplikasi berbasis Laravel dan React. Siap membantu membangun solusi digital untuk bisnis Anda.',
         ]);
 
-        $catalog = Catalog::create([
+        Catalog::create([
             'user_id'       => $user->id,
             'catalog_name'  => 'Jasa Pembuatan Website Profesional',
             'price'         => 1500000,
             'description'   => 'Layanan pembuatan website custom untuk bisnis, portofolio, atau toko online. Desain responsif dan SEO friendly. Estimasi pengerjaan 5-7 hari.',
         ]);
 
-        $portofolio = Portofolio::create([
+        Portofolio::create([
             'user_id'   => $user->id,
             'title'     => 'my portofolio',
             'url'       => 'my-portofolio.com',
         ]);
 
-        $location = Location::create([
+        Location::create([
             'user_id'       => $user->id,
             'accuracy'      => 5,
             'latitude'      => -6.2,
@@ -149,12 +167,5 @@ class DatabaseSeeder extends Seeder
             'description'       => 'Certificate for completing Laravel course',
             'status'            => 'active',
         ]);
-
-
-
-
-
-
-
     }
 }

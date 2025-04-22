@@ -2,7 +2,6 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\UserController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 Route::get('/', function () {

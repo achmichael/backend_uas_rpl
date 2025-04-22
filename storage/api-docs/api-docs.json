@@ -790,6 +790,67 @@
                 }
             }
         },
+        "/api/companies/check/{id}": {
+            "get": {
+                "tags": [
+                    "Companies"
+                ],
+                "summary": "Check if a company exists",
+                "operationId": "c147b8d4e254880a9bf9a7b0b612cce2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Company ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Company found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "succes": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Company"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Company not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "succes": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "massage": {
+                                            "type": "string",
+                                            "example": "company is nothing beb"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/companies/{id}": {
             "put": {
                 "tags": [

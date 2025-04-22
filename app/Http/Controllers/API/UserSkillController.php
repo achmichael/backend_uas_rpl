@@ -1,9 +1,10 @@
 <?php
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\UserSkills;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
@@ -17,7 +18,7 @@ class UserSkillController extends Controller
             ]);
 
             $userSkill = UserSkills::create([
-                'user_id'  => Auth::user()->id,
+                'user_id'  => JWTAuth::parseToken()->authenticate()->id,
                 'skill_id' => $request->skill_id,
             ]);
 
@@ -36,7 +37,7 @@ class UserSkillController extends Controller
 
     public function index()
     {
-        $userSkills = UserSkills::with('skill')->where('user_id', Auth::user()->id)->get();
+        $userSkills = UserSkills::with('skill')->where('user_id', JWTAuth::parseToken()->authenticate()->id)->get();
 
         return response()->json([
             'success' => true,

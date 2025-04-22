@@ -4,11 +4,9 @@ namespace App\Http\Controllers\API\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
-
+use Tymon\JWTAuth\Facades\JWTAuth;
 /**
  * @OA\Tag(
  *     name="Auth",
@@ -57,33 +55,45 @@ class AuthController extends Controller
                 return error('Email or username is required.', 400);
             }
 
-            if (! Auth::attempt($credentials, $remember)) {
+            if ($request->boolean('remember_me')) {
+                JWTAuth::factory()->setTTL(60 * 24 * 30); // 30 days
+            }
+
+            if (! $token = JWTAuth::attempt($credentials, $remember)) {
                 return error('Invalid credentials.', 401);
             }
             
-            $user = Auth::user();
+            $user = JWTAuth::user();
 
             if (! $user->is_verified) {
                 return error('Email not verified, please verified your email', 401);
             }
 
-            Auth::login($user);
+            // Auth::login($user);
 
-            $request->session()->regenerate();
+            // $request->session()->regenerate(); // regenerate session id to prevent session fixation attacks
 
-            $token = $user->createToken('auth_token')->plainTextToken;
+            // session([
+            //     'auth_token' => $token,
+            //     'user_id'    => $user->id,
+            //     'role_id'    => $user->role_id,
+            //     'username'   => $user->username,
+            //     'email'      => $user->email,
+            // ]);
 
-            session([
-                'auth_token' => $token,
-                'user_id'    => $user->id,
-                'role_id'    => $user->role_id,
-                'username'   => $user->username,
-                'email'      => $user->email,
-            ]);
+            // session()->save();
 
-            session()->save();
+             // return response()->json([
+            //     'token'   => $token,
+            //     'success' => true,
+            //     'message' => 'Login successful.',
+            // ])->cookie('auth_token', $token, 60 * 24, '/', '', true, true, false, 'Lax');
 
-            return redirect('/test')->withCookie(cookie('auth_token', $token, 60));
+            return success([
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => JWTAuth::factory()->getTTL() * 60,
+        ], 'Login Success', 200)->cookie('auth_token', $token, 60 * 24, '/', '', true, true, false, 'Lax');
         } catch (ValidationException $e) {
             return errorValidation($e->getMessage(), $e->errors(), 422);
         }
@@ -143,30 +153,14 @@ class AuthController extends Controller
                 Log::error('Failed to send verification email: ' . $e->getMessage());
             }
 
-            Auth::login($user);
-
-            $request->session()->regenerate();
-
-            // Di controller register
-            $token = $user->createToken('auth_token')->plainTextToken;
-
-            session([
-                'auth_token' => $token,
-                'user_id'    => $user->id,
-                'role_id'    => $user->role_id,
-                'username'   => $user->username,
-                'email'      => $user->email,
-            ]);
-
-            session()->save();
-
-            // return response()->json([
-            //     'token'   => $token,
-            //     'success' => true,
-            //     'message' => 'Register successful.',
-            // ])->cookie('auth_token', $token, 60 * 24, '/', '', true, true, false, 'Lax');
-            return redirect('/test')->withCookie(cookie('auth_token', $token, 60));
-        } catch (\Illuminate\Validation\ValidationException $e) {
+            $token = JWTAuth::fromUser($user);
+            
+            return success([
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => JWTAuth::factory()->getTTL() * 60,
+            ], 'Register Success', 201)->cookie('auth_token', $token, 60 * 24, '/', '', true, true, false, 'Lax');
+        } catch (ValidationException $e) {
             return errorValidation($e->getMessage(), $e->errors(), 422);
         }
     }

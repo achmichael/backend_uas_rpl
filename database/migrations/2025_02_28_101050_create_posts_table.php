@@ -17,13 +17,14 @@ return new class extends Migration
             $table->string('title', 150);
             $table->text('description');
             $table->float('price');
+            $table->unsignedBigInteger('level_id');
             $table->json('required_skills'); // Array: ["Laravel", "React"]
             $table->float('min_experience_years');
             $table->unsignedBigInteger('category_id');
             $table->integer('number_of_employee');
             $table->timestamps();
 
-
+            $table->foreign('level_id')->references('id')->on('levels')->onDelete('cascade');
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->foreign('posted_by')->references('id')->on('users')->onDelete('cascade');
         });

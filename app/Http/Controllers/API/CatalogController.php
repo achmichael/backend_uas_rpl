@@ -1,9 +1,10 @@
 <?php
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\Catalog;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -75,7 +76,7 @@ class CatalogController extends Controller
                 'description'  => 'required',
             ]);
             $data            = $request->all();
-            $data['user_id'] = auth()->id;
+            $data['user_id'] = JWTAuth::parseToken()->authenticate()->id;
             $catalog         = Catalog::create($data);
 
             if (! $catalog) {
