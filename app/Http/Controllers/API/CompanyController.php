@@ -164,7 +164,7 @@ class CompanyController extends Controller
         if (! $company) {
             return error('company is nothing', 404);
         }
-        return success($company, 'success get company', 200);
+        return success($id, 'success get company', 200);
     }
 
     public function search(Request $request)
@@ -250,7 +250,7 @@ class CompanyController extends Controller
             }
 
             $company->update($request->all());
-            return success($company, 'success update company', 200);
+            return success($id, 'success update company', 200);
         } catch (ValidationException $e) {
             return errorValidation($e->getMessage(), $e->errors(), 422);
         }

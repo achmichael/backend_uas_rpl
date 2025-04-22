@@ -63,7 +63,7 @@ class PaymentCallbackController extends Controller
                 ]);
             }
 
-            return success($payment,'Payment notification received',201);
+            return success($payment,'Payment notification received',200);
 
         }catch (ValidationException $e) {
             return errorValidation($e->getMessage(),$e->errors(),500);

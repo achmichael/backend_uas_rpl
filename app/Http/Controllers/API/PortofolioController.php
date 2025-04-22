@@ -78,9 +78,9 @@ class PortofolioController extends Controller
         $data['user_id'] = auth()->id;
         $portofolio = Portofolio::create($data);
         if(! $portofolio){
-            return error('invalid create data',404);
+            return error('invalid create portofolio',404);
         }
-        return success($portofolio,'succes create data',200);
+        return success($portofolio,'succes create portofolio',201);
         }catch(ValidationException $e){
             return errorValidation($e->getMessage(),$e->errors(),404);
         }
@@ -150,7 +150,7 @@ class PortofolioController extends Controller
 
             }
             $portofolio->updated($request->all());
-            return success($portofolio,'success',200);
+            return success($id,'success update portofolio',200);
 
         }catch(ValidationException $e){
            return errorValidation($e->getMessage(),$e->errors(),422);
@@ -195,7 +195,7 @@ class PortofolioController extends Controller
         }
 
         $portofolio->delete($id);
-        return success($portofolio,'delete has already succesfully',200);
+        return success($id,'delete has already succesfully',200);
 
     }
 

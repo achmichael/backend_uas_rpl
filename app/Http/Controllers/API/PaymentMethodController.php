@@ -49,7 +49,7 @@ class PaymentMethodController extends Controller
                 'name', 'type', 'provider', 'account_number', 'currency', 'status',
             ]));
 
-            return success($paymentMethod,'paymentmethod update successfully',200);
+            return success($paymentMethod,'paymentmethod update successfully',201);
         } catch (ValidationException $e) {
             return errorValidation($e->getMessage(),$e->errors(),422);
         }
@@ -59,10 +59,10 @@ class PaymentMethodController extends Controller
     {
         $paymentMethod = PaymentMethod::find($id);
         if (! $paymentMethod) {
-           return error('paymentmethod not found',400);
+           return error('paymentmethod not found',404);
         }
 
         $paymentMethod->delete();
-        return success($paymentMethod,'delete data successfully',200);
+        return success($id,'delete data successfully',200);
     }
 }

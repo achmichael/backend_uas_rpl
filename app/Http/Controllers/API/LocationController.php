@@ -155,7 +155,7 @@ class LocationController extends Controller
             }
 
         $location->update($request->all());
-        return success($location,'location update successfully');
+        return success($id,'location update successfully',200);
         }catch(ValidationException $e){
         return errorValidation($e->getMessage(),$e->errors(),422);
      }
@@ -192,13 +192,13 @@ class LocationController extends Controller
      */
 
 
-     
+
     public function delete($id){
         $location = Location::find($id);
         if(! $location){
             return error('location with that id is empty');
         }
         $location->delete();
-        return success($location,'location delete successfully');
+        return success($id,'location delete successfully',200);
     }
 }
