@@ -2,7 +2,8 @@
 namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
-use Gemini\Laravel\Facades\Gemini;
+// use Gemini\Laravel\Facades\Gemini;
+use Gemini;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 
@@ -16,9 +17,12 @@ class AIController extends Controller
 
         try {
             $message  = $request->input('message');
-            $response = Gemini::geminiPro()->generateContent('Hello');
-            return response()->json($response->text(), 200);
+            $model = 'gemini-2.0-flash'; 
+            $client = Gemini::client(config('gemini.api_key')); 
+            $result = $client->generativeModel($model)->generateContent($message); 
+            return response()->json($result->candidates[0]->content->parts[0]->text, 200);
         } catch (\Exception $e) {
+            Log::info('Gemini Key:', [ config('gemini.api_key') ]);
             Log::error('Gemini API error: ' . $e->getMessage());
             return response()->json(['error' => 'Failed to get response from AI'], 500);
         }
