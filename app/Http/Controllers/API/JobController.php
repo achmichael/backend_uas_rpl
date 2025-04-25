@@ -327,6 +327,42 @@ class JobController extends Controller
             'status'  => 'succes',
             'massage' => 'deleted succesfully',
         ]);
-
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/jobs/company/{id}",
+     *     summary="Get jobs by company ID",
+     *     tags={"Job"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Company ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Jobs by company ID",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="succes", type="string", example="succes"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/Job")
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function jobsByCompany($id)
+    {
+        $jobs = Job::with(['post'])->whereHas('post', function ($query) use ($id){
+            $query->where('posted_by', $id);
+        })->get();
+
+        return success($jobs, 'Data pekerjaan berdasarkan company id berhasil diambil');
+    }
+
+    
 }
