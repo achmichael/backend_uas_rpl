@@ -13,6 +13,7 @@ use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\UserProfileController;
 use App\Http\Controllers\API\UserSkillController;
+use App\Http\Controllers\API\ApplicationController;
 use App\Http\Controllers\API\AIController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -124,6 +125,14 @@ Route::middleware(['auth:api'])->group(function () {
         Route::put('/{id}', [UserController::class, 'update']);
         Route::get('/{id}', [UserController::class, 'show']);
     });    
+
+    Route::prefix('applications')->group(function () {
+        Route::post('/', [ApplicationController::class, 'create']);
+        Route::put('/{id}', [ApplicationController::class, 'update']);
+        Route::post('/{id}/change-state', [ApplicationController::class, 'changeState']);
+        Route::delete('/{id}', [ApplicationController::class, 'delete']);
+        Route::get('/{id}', [ApplicationController::class, 'show']);
+    });
 });
 // Route fallback execute when route not found in routes in api.php
 Route::fallback(function () {

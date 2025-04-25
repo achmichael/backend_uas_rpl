@@ -17,4 +17,9 @@ class Application extends Model
     {
         return $this->belongsTo(User::class, 'applicant_id');
     }
+
+    public function scopeChangeStatus($query, $status)
+    {
+        return $query->update(['status' => $status]);
+    }
 }

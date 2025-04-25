@@ -91,4 +91,9 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
     {
         return [];
     }
+
+    public function company()
+    {
+        return $this->hasOne(Company::class);
+    }
 }
