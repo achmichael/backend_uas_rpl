@@ -93,6 +93,7 @@ class AuthController extends Controller
                 'access_token' => $token,
                 'token_type' => 'bearer',
                 'expires_in' => JWTAuth::factory()->getTTL() * 60,
+                'user' => $user->load(['role'])
         ], 'Login Success', 200)->cookie('auth_token', $token, 60 * 24, '/', '', true, true, false, 'Lax');
         } catch (ValidationException $e) {
             return errorValidation($e->getMessage(), $e->errors(), 422);
@@ -159,6 +160,8 @@ class AuthController extends Controller
                 'access_token' => $token,
                 'token_type' => 'bearer',
                 'expires_in' => JWTAuth::factory()->getTTL() * 60,
+                // 'role' => $user->load(['role']),
+                'user' => $user->load(['role']) // get role user by relation in user model
             ], 'Register Success', 201)->cookie('auth_token', $token, 60 * 24, '/', '', true, true, false, 'Lax');
         } catch (ValidationException $e) {
             return errorValidation($e->getMessage(), $e->errors(), 422);

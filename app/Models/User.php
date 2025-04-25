@@ -46,7 +46,7 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
      * @return array<string, string>
      *
      */
-    protected function casts(): array
+    public function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
@@ -81,6 +81,10 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
     public function getJWTIdentifier()
     {
         return $this->getKey();
+    }
+
+    public function role(){
+        return $this->belongsTo(Role::class, 'role_id', 'id');
     }
 
     public function getJWTCustomClaims()
