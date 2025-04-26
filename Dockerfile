@@ -9,11 +9,16 @@ RUN apt-get update && apt-get install -y libpq-dev libpng-dev libjpeg-dev libfre
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Salin kode aplikasi ke dalam container
+# Salin sisa kode aplikasi ke dalam container
 COPY . /app
 
-# Set working directory
+COPY wait-for-it.sh /app/wait-for-it.sh
+
+RUN chmod +x /app/wait-for-it.sh
+
 WORKDIR /app
 
+RUN composer dump-autoload
+
 # Jalankan perintah Octane saat container dimulai
-ENTRYPOINT ["php", "artisan", "octane:start", "--server=frankenphp", "--host=0.0.0.0", "--port=8000", "--workers=1", "--max-requests=1"]
+ENTRYPOINT ["sh", "./wait-for-it.sh", "mysql:3306", "--", "php", "artisan", "octane:start", "--server=frankenphp", "--host=0.0.0.0", "--port=8000", "--workers=4"]>
