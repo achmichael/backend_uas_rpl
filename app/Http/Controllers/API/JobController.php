@@ -311,7 +311,7 @@ class JobController extends Controller
      *     )
      * )
      */
-    
+
     public function delete($id)
     {
 
@@ -355,14 +355,25 @@ class JobController extends Controller
      *     )
      * )
      */
-    public function jobsByCompany($id)
+    public function jobsByCompany(Request $request)
     {
-        $jobs = Job::with(['post'])->whereHas('post', function ($query) use ($id){
-            $query->where('posted_by', $id);
-        })->get();
-
-        return success($jobs, 'Data pekerjaan berdasarkan company id berhasil diambil');
+        try {
+            $request->validate([
+                'id' => 'required|uuid|exists:users,id',
+            ]);
+    
+            $jobs = Job::with(['post.applications'])
+                ->whereHas('post', fn($q) => $q->where('posted_by', $request->id))
+                ->get();
+    
+            $jobs->each(function ($job) {
+                $job->applications_count = $job->post ? $job->post->applications->count() : 0;
+            });
+    
+            return success($jobs, 'Data pekerjaan berdasarkan company id berhasil diambil');
+        }catch(ValidationException $e){
+            return error($e->errors(), 422);
+        }
     }
 
-    
 }

@@ -9,7 +9,7 @@ use PhpParser\Node\Expr\FuncCall;
 class Company extends Model
 {
     use UUID;
-    protected $guarded=[];
+    protected $guarded = ['id'];
 
     public function user(){
         return $this->belongsTo(User::class, 'user_id');
@@ -22,6 +22,11 @@ class Company extends Model
     public function post()
     {
         return $this->belongsTo(Post::class);
+    }
+
+    public function employees()
+    {
+        return $this->hasMany(EmployeesCompany::class);
     }
 }
 
