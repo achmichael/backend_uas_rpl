@@ -14,6 +14,8 @@ COPY . /app
 
 COPY wait-for-it.sh /app/wait-for-it.sh
 
+COPY --chmod=755 wait-for-it.sh /app/wait-for-it.sh
+
 RUN chmod +x /app/wait-for-it.sh
 
 WORKDIR /app
@@ -21,4 +23,4 @@ WORKDIR /app
 RUN composer dump-autoload
 
 # Jalankan perintah Octane saat container dimulai
-ENTRYPOINT ["sh", "./wait-for-it.sh", "mysql:3306", "--", "php", "artisan", "octane:start", "--server=frankenphp", "--host=0.0.0.0", "--port=8000", "--workers=4"]>
+ENTRYPOINT ["sh", "./wait-for-it.sh", "mysql:3306", "--", "php", "artisan", "octane:start", "--server=frankenphp", "--host=0.0.0.0", "--port=8000", "--workers=1"]

@@ -3,7 +3,7 @@ services:
     build:
       context: .
     entrypoint: >
-       sh -c "./wait-for-it.sh mysql:3306 -- php artisan config:cache && php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=8000"    
+      sh -c "./wait-for-it.sh mysql:3306 -- php artisan config:cache && php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=8000"
     ports:
       - "8000:8000"
     container_name: backend_frankenphp
@@ -34,3 +34,4 @@ networks:
 
 volumes:
   mysql_data:
+
