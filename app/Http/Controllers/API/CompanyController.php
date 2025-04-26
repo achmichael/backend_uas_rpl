@@ -160,7 +160,7 @@ class CompanyController extends Controller
 
     public function show($id)
     {
-        $company = Company::with('user')->find($id);
+        $company = Company::with(['user'])->withCount('employees')->find($id);
         if (! $company) {
             return error('company is nothing', 404);
         }

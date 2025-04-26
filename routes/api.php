@@ -41,7 +41,7 @@ Route::prefix('ai')->group(function() {
     Route::post('/chat', [AIController::class, 'chat']);
 });
 
-Route::middleware(['auth:api'])->group(function () {
+Route::middleware(['jwt.auth'])->group(function () {
     Route::prefix('portofolios')->group(function () {
         Route::post('/', [PortofolioController::class, 'create']);
         Route::put('/{id}', [PortofolioController::class, 'update']);
@@ -76,6 +76,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/', [JobController::class, 'create']);
         Route::put('/{id}', [JobController::class, 'update']);
         Route::delete('/{id}', [JobController::class, 'delete']);
+        Route::post('/company-jobs', [JobController::class, 'jobsByCompany']);
     });
     
     Route::prefix('companies')->group(function () {

@@ -91,7 +91,6 @@ class DatabaseSeeder extends Seeder
             'category_id' => $category->id,
             'number_of_employee' => 2,
             'posted_by' => $user->id,
-
         ]);
 
         $job = Job::create([
@@ -115,16 +114,12 @@ class DatabaseSeeder extends Seeder
         
         Company::create([
             'user_id' => $user->id,
-            'post_id' => $post->id,
             'name'    => 'bossware',
             'image'   => 'https://source.unsplash.com/random',
             'address'  => 'jl gajayana malang, jawa-timur, indonesia',
-            'phone'   => '082241370247',
-            'email'   => 'bossware@gmail.com',
             'website' => 'bossware.com',
             'founded' => '2002',
         ]);
-
 
         UserProfile::create([
             'user_id'           => $user->id,

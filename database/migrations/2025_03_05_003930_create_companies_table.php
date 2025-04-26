@@ -14,16 +14,14 @@ return new class extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->uuid('id');
             $table->uuid('user_id');
-            $table->uuid('post_id');
             $table->string('name');
             $table->string('image');
-            $table->string('address');
-            $table->string('phone');
-            $table->string('email');
+            $table->text('address');
             $table->string('website');
             $table->integer('founded');
             $table->timestamps();
 
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

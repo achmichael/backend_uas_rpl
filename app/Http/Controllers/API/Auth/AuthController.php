@@ -65,6 +65,8 @@ class AuthController extends Controller
             
             $user = JWTAuth::user();
 
+            $relation = $this->relationCanBeLoaded($user->role_id);
+
             if (! $user->is_verified) {
                 return error('Email not verified, please verified your email', 401);
             }
@@ -93,7 +95,7 @@ class AuthController extends Controller
                 'access_token' => $token,
                 'token_type' => 'bearer',
                 'expires_in' => JWTAuth::factory()->getTTL() * 60,
-                'user' => $user->load(['role'])
+                'user' => $relation ? $user->load(['role', $relation]) : $user->load(['role']) // get role user by relation in user model
         ], 'Login Success', 200)->cookie('auth_token', $token, 60 * 24, '/', '', true, true, false, 'Lax');
         } catch (ValidationException $e) {
             return errorValidation($e->getMessage(), $e->errors(), 422);
@@ -154,17 +156,33 @@ class AuthController extends Controller
                 Log::error('Failed to send verification email: ' . $e->getMessage());
             }
 
+            $relation = $this->relationCanBeLoaded($request->role_id);
             $token = JWTAuth::fromUser($user);
             
             return success([
                 'access_token' => $token,
                 'token_type' => 'bearer',
                 'expires_in' => JWTAuth::factory()->getTTL() * 60,
-                // 'role' => $user->load(['role']),
-                'user' => $user->load(['role']) // get role user by relation in user model
+                'user' => $relation ? $user->load(['role', $relation]) : $user->load(['role']) // get role user by relation in user model
             ], 'Register Success', 201)->cookie('auth_token', $token, 60 * 24, '/', '', true, true, false, 'Lax');
         } catch (ValidationException $e) {
             return errorValidation($e->getMessage(), $e->errors(), 422);
+        }
+    }
+
+    public function relationCanBeLoaded($role_id)
+    {
+        switch ($role_id){
+            case 2:
+                return 'company';
+            case 3:
+                return 'freelancer';
+            case 4:
+                return 'government';
+            case 5:
+                return 'client';
+            default:
+                return null;
         }
     }
 }
