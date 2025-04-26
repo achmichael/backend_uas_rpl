@@ -4,7 +4,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-use App\Models\catalog;
+use App\Models\Catalog;
 use App\Models\Category;
 use App\Models\Company;
 use App\Models\Contract;

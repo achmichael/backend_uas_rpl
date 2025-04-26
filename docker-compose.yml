@@ -2,11 +2,36 @@ services:
   frankenphp:
     build:
       context: .
-    entrypoint: php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=8000
+    entrypoint: >
+      sh -c "./wait-for-it.sh mysql:3306 -- php artisan config:cache && php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=8000"
     ports:
       - "8000:8000"
+    container_name: backend_frankenphp
     environment:
       - HTTPS=true
       - APP_URL=https://api-backendrpl.achmichael.my.id
     volumes:
       - .:/app
+    networks:
+      - backendrpl
+    depends_on:
+      - mysql
+  mysql:
+    image: mysql:8.0
+    container_name: database_server
+    environment:  # Perbaikan disini
+      - MYSQL_DATABASE=laravel
+      - MYSQL_ROOT_PASSWORD=secret
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - backendrpl
+
+networks:
+  backendrpl:
+
+volumes:
+  mysql_data:
+
