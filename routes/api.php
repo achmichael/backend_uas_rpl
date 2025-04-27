@@ -41,6 +41,8 @@ Route::prefix('ai')->group(function() {
     Route::post('/chat', [AIController::class, 'chat']);
 });
 
+Route::get('/verify-token', [AuthController::class, 'verifyToken']);
+
 Route::middleware(['jwt.auth'])->group(function () {
     Route::prefix('portofolios')->group(function () {
         Route::post('/', [PortofolioController::class, 'create']);

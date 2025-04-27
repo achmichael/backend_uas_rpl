@@ -362,14 +362,19 @@ class JobController extends Controller
                 'id' => 'required|uuid|exists:users,id',
             ]);
     
-            $jobs = Job::with(['post.applications'])
+            $jobs = Job::with(['post.applications', 'post.user.company.employees'])
                 ->whereHas('post', fn($q) => $q->where('posted_by', $request->id))
+                ->where('status', 'open')
                 ->get();
     
             $jobs->each(function ($job) {
                 $job->applications_count = $job->post ? $job->post->applications->count() : 0;
             });
-    
+            
+            $jobs->each(function ($job){
+                $job->teams_count = $job->post ? $job->post->user->company->employees->count() : 0;
+            });
+            
             return success($jobs, 'Data pekerjaan berdasarkan company id berhasil diambil');
         }catch(ValidationException $e){
             return error($e->errors(), 422);

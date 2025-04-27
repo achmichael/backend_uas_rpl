@@ -6,7 +6,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
+
 /**
  * @OA\Tag(
  *     name="Auth",
@@ -62,7 +64,7 @@ class AuthController extends Controller
             if (! $token = JWTAuth::attempt($credentials, $remember)) {
                 return error('Invalid credentials.', 401);
             }
-            
+
             $user = JWTAuth::user();
 
             $relation = $this->relationCanBeLoaded($user->role_id);
@@ -71,32 +73,12 @@ class AuthController extends Controller
                 return error('Email not verified, please verified your email', 401);
             }
 
-            // Auth::login($user);
-
-            // $request->session()->regenerate(); // regenerate session id to prevent session fixation attacks
-
-            // session([
-            //     'auth_token' => $token,
-            //     'user_id'    => $user->id,
-            //     'role_id'    => $user->role_id,
-            //     'username'   => $user->username,
-            //     'email'      => $user->email,
-            // ]);
-
-            // session()->save();
-
-             // return response()->json([
-            //     'token'   => $token,
-            //     'success' => true,
-            //     'message' => 'Login successful.',
-            // ])->cookie('auth_token', $token, 60 * 24, '/', '', true, true, false, 'Lax');
-
             return success([
                 'access_token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => JWTAuth::factory()->getTTL() * 60,
-                'user' => $relation ? $user->load(['role', $relation]) : $user->load(['role']) // get role user by relation in user model
-        ], 'Login Success', 200)->cookie('auth_token', $token, 60 * 24, '/', '', true, true, false, 'Lax');
+                'token_type'   => 'bearer',
+                'expires_in'   => JWTAuth::factory()->getTTL() * 60,
+                'user'         => $relation ? $user->load(['role', $relation]) : $user->load(['role']), // get role user by relation in user model
+            ], 'Login Success', 200)->cookie('auth_token', $token, 60 * 24, '/', '', true, true, false, 'Lax');
         } catch (ValidationException $e) {
             return errorValidation($e->getMessage(), $e->errors(), 422);
         }
@@ -157,13 +139,13 @@ class AuthController extends Controller
             }
 
             $relation = $this->relationCanBeLoaded($request->role_id);
-            $token = JWTAuth::fromUser($user);
-            
+            $token    = JWTAuth::fromUser($user);
+
             return success([
                 'access_token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => JWTAuth::factory()->getTTL() * 60,
-                'user' => $relation ? $user->load(['role', $relation]) : $user->load(['role']) // get role user by relation in user model
+                'token_type'   => 'bearer',
+                'expires_in'   => JWTAuth::factory()->getTTL() * 60,
+                'user'         => $relation ? $user->load(['role', $relation]) : $user->load(['role']), // get role user by relation in user model
             ], 'Register Success', 201)->cookie('auth_token', $token, 60 * 24, '/', '', true, true, false, 'Lax');
         } catch (ValidationException $e) {
             return errorValidation($e->getMessage(), $e->errors(), 422);
@@ -172,7 +154,7 @@ class AuthController extends Controller
 
     public function relationCanBeLoaded($role_id)
     {
-        switch ($role_id){
+        switch ($role_id) {
             case 2:
                 return 'company';
             case 3:
@@ -183,6 +165,22 @@ class AuthController extends Controller
                 return 'client';
             default:
                 return null;
+        }
+    }
+
+    public function verifyToken()
+    {
+        try {
+            // Cek token dari header Authorization
+            $user = JWTAuth::parseToken()->authenticate();
+
+            if (! $user) {
+                return error('User not found', 404);
+            }
+
+            return success($user, 'Token is valid', 200);
+        } catch (JWTException $e) {
+            return error('Token is invalid or expired', 401);
         }
     }
 }
