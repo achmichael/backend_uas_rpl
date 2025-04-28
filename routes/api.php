@@ -41,6 +41,17 @@ Route::prefix('ai')->group(function() {
     Route::post('/chat', [AIController::class, 'chat']);
 });
 
+Route::prefix('jobs')->group(function () {
+    Route::get('/', [JobController::class, 'index']);
+    Route::get('/{id}', [JobController::class, 'show']);
+});
+
+Route::prefix('posts')->group(function () {
+    Route::get('/', [PostController::class, 'index']);
+    Route::get('/{id}', [PostController::class, 'show']);
+});
+
+
 Route::get('/verify-token', [AuthController::class, 'verifyToken']);
 
 Route::middleware(['jwt.auth'])->group(function () {
@@ -73,8 +84,6 @@ Route::middleware(['jwt.auth'])->group(function () {
     });
     
     Route::prefix('jobs')->group(function () {
-        Route::get('/', [JobController::class, 'index']);
-        Route::get('/{id}', [JobController::class, 'show']);
         Route::post('/', [JobController::class, 'create']);
         Route::put('/{id}', [JobController::class, 'update']);
         Route::delete('/{id}', [JobController::class, 'delete']);
@@ -90,8 +99,6 @@ Route::middleware(['jwt.auth'])->group(function () {
     });
     
     Route::prefix('posts')->group(function () {
-        Route::get('/', [PostController::class, 'index']);
-        Route::get('/show-post/{id}', [PostController::class, 'show']);
         Route::post('/', [PostController::class, 'store']);
         Route::put('/{id}', [PostController::class, 'update']);
         Route::delete('/{id}', [PostController::class, 'destroy']);
