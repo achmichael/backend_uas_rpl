@@ -20,10 +20,13 @@ return new class extends Migration
                 'active',
                 'inactive',
                 'cuty',
-                'resigned',
+                'resigned'
             ]);
             $table->softDeletes();
             $table->timestamps();
+
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
+            $table->foreign('employee_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

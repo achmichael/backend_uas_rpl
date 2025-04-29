@@ -17,6 +17,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
  */
 class AuthController extends Controller
 {
+
     /**
      * @OA\Post(
      *     path="/api/login",

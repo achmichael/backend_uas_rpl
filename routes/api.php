@@ -51,7 +51,6 @@ Route::prefix('posts')->group(function () {
     Route::get('/{id}', [PostController::class, 'show']);
 });
 
-
 Route::get('/verify-token', [AuthController::class, 'verifyToken']);
 
 Route::middleware(['jwt.auth'])->group(function () {
@@ -84,7 +83,7 @@ Route::middleware(['jwt.auth'])->group(function () {
     });
     
     Route::prefix('jobs')->group(function () {
-        Route::post('/', [JobController::class, 'create']);
+        Route::post('/', [JobController::class, 'create'])->withoutMiddleware('jwt.auth');
         Route::put('/{id}', [JobController::class, 'update']);
         Route::delete('/{id}', [JobController::class, 'delete']);
         Route::post('/company-jobs', [JobController::class, 'jobsByCompany']);

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('username', 50)->unique();
             $table->string('email', 50)->unique();
-            $table->string('password', 200);
+            $table->string('password', 200)->nullable(); // nullable for oauth accounts
             $table->unsignedBigInteger('role_id');
             $table->string('phone_number', 15)->nullable();
             $table->string('profile_picture', 100)->nullable();
