@@ -160,7 +160,7 @@ class JobController extends Controller
         }
     }
 
-    /**
+    /** 
      * @OA\Get(
      *     path="/api/jobs/{id}",
      *     summary="Get job details",
@@ -326,15 +326,10 @@ class JobController extends Controller
             return error('job not found',404);
         }
         $job->delete();
-<<<<<<< HEAD
-        return success($id,'delete successfully',200);
-
-=======
         return response()->json([
             'status'  => 'succes',
             'massage' => 'deleted succesfully',
         ]);
->>>>>>> 42801cf6aa7ddd39678eca989aeb5e217fcf4bc5
     }
 
     /**

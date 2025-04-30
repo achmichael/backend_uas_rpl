@@ -133,8 +133,6 @@ Route::middleware(['jwt.auth'])->group(function () {
         });
         Route::put('/{id}', [UserController::class, 'update']);
         Route::get('/{id}', [UserController::class, 'show']);
-<<<<<<< HEAD
-=======
     });
 
     Route::prefix('applications')->group(function () {
@@ -143,7 +141,6 @@ Route::middleware(['jwt.auth'])->group(function () {
         Route::post('/{id}/change-state', [ApplicationController::class, 'changeState']);
         Route::delete('/{id}', [ApplicationController::class, 'delete']);
         Route::get('/{id}', [ApplicationController::class, 'show']);
->>>>>>> 42801cf6aa7ddd39678eca989aeb5e217fcf4bc5
     });
 });
 // Route fallback execute when route not found in routes in api.php

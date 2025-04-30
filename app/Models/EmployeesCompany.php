@@ -18,10 +18,10 @@ class EmployeesCompany extends Model
         return [
             'deleted_at' => 'datetime',
             'created_at' => 'datetime',
-            'updated_at'=> 'created_at',
+            'updated_at'=> 'datetime',
         ];
     }
-    
+
     public function employee()
     {
         return $this->belongsTo(User::class, 'employee_id');

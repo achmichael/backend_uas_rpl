@@ -17,6 +17,17 @@ use App\Models\User;
 use App\Models\UserProfile;
 use App\Models\Certificate;
 use App\Models\Level;
+use App\Models\Review;
+use App\Models\Freelancer;
+use App\Models\Friendship;
+use App\Models\PaymentMethod;
+use App\Models\PaymentCallback;
+use App\Models\UserSkills;
+use App\Models\EmployeesCompany;
+use App\Models\OauthAccount;
+use App\Models\Skill;
+
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -36,7 +47,7 @@ class DatabaseSeeder extends Seeder
             'role_name'   => 'company',
             'description' => 'Company',
         ]);
-        
+
         Role::create([
             'role_name'   => 'freelancer',
             'description' => 'Freelancer',
@@ -78,7 +89,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Expert',
             'description' => 'Expert level with good knowledge and skills in the field.',
         ]);
-        
+
 
 
         $post = Post::create([
@@ -110,8 +121,8 @@ class DatabaseSeeder extends Seeder
             'contract_date' => now(),
             'status' => 'active',
         ]);
-        
-        Company::create([
+
+        $company = Company::create([
             'user_id' => $user->id,
             'name'    => 'bossware',
             'image'   => 'https://source.unsplash.com/random',
@@ -134,7 +145,7 @@ class DatabaseSeeder extends Seeder
             'description'   => 'Layanan pembuatan website custom untuk bisnis, portofolio, atau toko online. Desain responsif dan SEO friendly. Estimasi pengerjaan 5-7 hari.',
         ]);
 
-        Portofolio::create([
+       $portofolio = Portofolio::create([
             'user_id'   => $user->id,
             'title'     => 'my portofolio',
             'url'       => 'my-portofolio.com',
@@ -161,5 +172,55 @@ class DatabaseSeeder extends Seeder
             'description'       => 'Certificate for completing Laravel course',
             'status'            => 'active',
         ]);
+
+       $skill = Skill::create([
+            'skill_name' => 'Laravel',
+            'description' => 'Laravel adalah framework PHP yang digunakan untuk membangun aplikasi web dengan sintaks yang elegan dan expressive.',
+        ]);
+
+        UserSkills::create([
+            'user_id' => $user->id,
+            'skill_id'=> $skill->id,
+        ]);
+
+       $freelancer = Freelancer::create([
+            'name' => 'John Doe', // Nama Freelancer
+            'description' => 'Freelancer dengan keahlian di bidang Web Development, khususnya menggunakan Laravel dan VueJS.',
+            'user_id' => $user->id, // ID user yang terhubung
+            'skills' => json_encode(["PHP", "Laravel", "VueJS", "JavaScript"]), // Menyimpan skills dalam format JSON
+            'experience_years' => 5, // Pengalaman dalam tahun
+            'rating' => 4.5, // Rating freelancer
+            'salary' => 8000000, // Gaji yang diinginkan
+            'portofolio_id' => $portofolio->id, // ID portofolio yang terhubung
+            'category_id' => $category->id, // ID kategori yang terhubung
+            'created_at' => now(), // Tanggal pembuatan
+            'updated_at' => now(), // Tanggal update
+        ]);
+
+        Friendship::create([
+            'user_id' => $user->id,
+            'friend_id' => $user->id, // dummy
+            'status' => 'accepted',
+        ]);
+
+        EmployeesCompany::create([
+            'company_id' => $company->id,
+            'employee_id' => $user->id,
+            'position' => 'CTO',
+            'status' => 'active'
+        ]);
+
+        Review::create([
+            'post_id'     => $post->id,
+            'reviewer_id' => $user->id,
+            'reviewee_id' => $user->id,
+            'rating'      => 5,
+            'comment'     => 'Kerja cepat dan profesional!',
+        ]);
+
+
+
+
+
     }
 }
