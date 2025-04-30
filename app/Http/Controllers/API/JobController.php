@@ -1,11 +1,13 @@
 <?php
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\Job;
+use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -111,18 +113,48 @@ class JobController extends Controller
     {
         try {
             $request->validate([
-                'min_experience_year' => 'required|numeric',
-                'number_of_employee'  => 'required|numeric',
-                'duration'            => 'required',
-                'status'              => 'required',
-                'type_job'            => 'required',
-                'type_salary'         => 'required',
-                'system'              => 'required',
+                'job_title'            => 'required|string',
+                'description'          => 'required|string',
+                'price'                => 'required|numeric',
+                'required_skills'      => 'required|json',
+                'level_id'             => 'required|exists:levels,id',
+                'category_id'          => 'required|exists:categories,id',
+                'min_experience_years' => 'required|numeric',
+                'number_of_employee'   => 'required|numeric',
+                'duration'             => 'required',
+                'status'               => 'required',
+                'type_job'             => 'required',
+                'type_salary'          => 'required',
+                'system'               => 'required',
             ]);
 
-            $newRecord = Job::create($request->all());
+            $post = DB::transaction(function () use ($request) {
+                $user = JWTAuth::parseToken()->authenticate();
 
-            return success($newRecord,'create job successfully');
+                $post = Post::create([
+                    'title'                => $request->job_title,
+                    'description'          => $request->description,
+                    'price'                => $request->price,
+                    'posted_by'            => $user->id,
+                    'required_skills'      => $request->required_skills,
+                    'level_id'             => $request->level_id,
+                    'category_id'          => $request->category_id,
+                    'min_experience_years' => $request->min_experience_years,
+                ]);
+
+                $post->job()->create([
+                    'post_id'            => $post->id,
+                    'number_of_employee' => $request->number_of_employee,
+                    'duration'           => $request->duration,
+                    'status'             => $request->status,
+                    'type_job'           => $request->type_job,
+                    'type_salary'        => $request->type_salary,
+                    'system'             => $request->system,
+                ]);
+                return $post;
+            });
+
+            return success($post->load('job'), 'Successfully created', 201);
         } catch (ValidationException $e) {
             return errorValidation($e->getMessage(),$e->errors(),422);
         }
@@ -294,7 +326,67 @@ class JobController extends Controller
             return error('job not found',404);
         }
         $job->delete();
+<<<<<<< HEAD
         return success($id,'delete successfully',200);
 
+=======
+        return response()->json([
+            'status'  => 'succes',
+            'massage' => 'deleted succesfully',
+        ]);
+>>>>>>> 42801cf6aa7ddd39678eca989aeb5e217fcf4bc5
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/jobs/company/{id}",
+     *     summary="Get jobs by company ID",
+     *     tags={"Job"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Company ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Jobs by company ID",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="succes", type="string", example="succes"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/Job")
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function jobsByCompany(Request $request)
+    {
+        try {
+            $request->validate([
+                'id' => 'required|uuid|exists:users,id',
+            ]);
+
+            $jobs = Job::with(['post.applications', 'post.user.company.employees'])
+                ->whereHas('post', fn($q) => $q->where('posted_by', $request->id))
+                ->where('status', 'open')
+                ->get();
+
+            $jobs->each(function ($job) {
+                $job->applications_count = $job->post ? $job->post->applications->count() : 0;
+            });
+
+            $jobs->each(function ($job) {
+                $job->teams_count = $job->post ? $job->post->user->company->employees->count() : 0;
+            });
+
+            return success($jobs, 'Data pekerjaan berdasarkan company id berhasil diambil');
+        } catch (ValidationException $e) {
+            return error($e->errors(), 422);
+        }
+    }
+
 }

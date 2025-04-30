@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('jobs_table', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('id_post');
-            $table->integer('min_experience_year');
-            $table->integer('number_of_employee');
+            $table->uuid('post_id');
+            $table->integer('number_of_employee')->nullable()->default(0);
             $table->integer('duration');
             $table->enum('status', ['open','closed']);
             $table->enum('type_job',['full-time','part-time','contract']);
@@ -23,7 +22,7 @@ return new class extends Migration
             $table->enum('system',['wfo','wfh']);
             $table->timestamps();
 
-            $table->foreign('id_post')->references('id')->on('posts')->onDelete('cascade');
+            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
         });
     }
 

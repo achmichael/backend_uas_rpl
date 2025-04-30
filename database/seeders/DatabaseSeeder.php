@@ -4,7 +4,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-use App\Models\catalog;
+use App\Models\Catalog;
 use App\Models\Category;
 use App\Models\Company;
 use App\Models\Contract;
@@ -89,14 +89,12 @@ class DatabaseSeeder extends Seeder
             'required_skills' => ["PHP", "Laravel", "JavaScript", "VueJS"],
             'min_experience_years' => 2,
             'category_id' => $category->id,
-            'number_of_employee' => 2,
+            // 'number_of_employee' => 2,
             'posted_by' => $user->id,
-
         ]);
 
         $job = Job::create([
-            'id_post'             => $post->id,
-            'min_experience_year' => '2',
+            'post_id'             => $post->id,
             'number_of_employee'  => '6',
             'duration'            => '1.5',
             'status'              => 'open',
@@ -115,16 +113,12 @@ class DatabaseSeeder extends Seeder
         
         Company::create([
             'user_id' => $user->id,
-            'post_id' => $post->id,
             'name'    => 'bossware',
             'image'   => 'https://source.unsplash.com/random',
             'address'  => 'jl gajayana malang, jawa-timur, indonesia',
-            'phone'   => '082241370247',
-            'email'   => 'bossware@gmail.com',
             'website' => 'bossware.com',
-            'founded' => '2002',
+            'founded_at' => now(),
         ]);
-
 
         UserProfile::create([
             'user_id'           => $user->id,

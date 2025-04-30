@@ -15,9 +15,9 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('username', 50)->unique();
             $table->string('email', 50)->unique();
-            $table->string('password', 200);
+            $table->string('password', 200)->nullable(); // nullable for oauth accounts
             $table->unsignedBigInteger('role_id');
-            $table->string('phone_nummber', 15)->nullable();
+            $table->string('phone_number', 15)->nullable();
             $table->string('profile_picture', 100)->nullable();
             $table->rememberToken();
             $table->boolean('is_verified')->default(false);
@@ -34,11 +34,14 @@ return new class extends Migration
 
         Schema::create('sessions', function (Blueprint $table) {
             $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
+            $table->uuid('user_id')->nullable()->index();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->longText('payload');
             $table->integer('last_activity')->index();
+            $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

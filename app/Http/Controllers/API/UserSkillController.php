@@ -14,7 +14,8 @@ class UserSkillController extends Controller
     {
         try {
             $request->validate([
-                'skill_id' => 'required|numeric|exists:skills,id', // to validate the skill_id                                         // 'skill_id.*' => 'integer|exists:skills,id' // to validate each element
+                'skill_id' => 'required|numeric|exists:skills,id', // to validate the skill_id                                         
+                // 'skill_id.*' => 'integer|exists:skills,id' // to validate each element
             ]);
 
             $userSkill = UserSkills::create([

@@ -13,6 +13,8 @@ use App\Http\Controllers\API\PostController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\UserProfileController;
 use App\Http\Controllers\API\UserSkillController;
+use App\Http\Controllers\API\ApplicationController;
+use App\Http\Controllers\API\AIController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -35,7 +37,23 @@ DELETE	/posts/{id}	destroy	Proses hapus data
 Route::post('/register', [AuthController::class, 'register'])->name('register')->middleware('web');
 Route::post('/login', [AuthController::class, 'login'])->middleware('web');
 
-Route::middleware(['auth'])->group(function () {
+Route::prefix('ai')->group(function() {
+    Route::post('/chat', [AIController::class, 'chat']);
+});
+
+Route::prefix('jobs')->group(function () {
+    Route::get('/', [JobController::class, 'index']);
+    Route::get('/{id}', [JobController::class, 'show']);
+});
+
+Route::prefix('posts')->group(function () {
+    Route::get('/', [PostController::class, 'index']);
+    Route::get('/{id}', [PostController::class, 'show']);
+});
+
+Route::get('/verify-token', [AuthController::class, 'verifyToken']);
+
+Route::middleware(['jwt.auth'])->group(function () {
     Route::prefix('portofolios')->group(function () {
         Route::post('/', [PortofolioController::class, 'create']);
         Route::put('/{id}', [PortofolioController::class, 'update']);
@@ -65,11 +83,10 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::prefix('jobs')->group(function () {
-        Route::get('/', [JobController::class, 'index']);
-        Route::get('/{id}', [JobController::class, 'show']);
         Route::post('/', [JobController::class, 'create']);
         Route::put('/{id}', [JobController::class, 'update']);
         Route::delete('/{id}', [JobController::class, 'delete']);
+        Route::post('/company-jobs', [JobController::class, 'jobsByCompany']);
     });
 
     Route::prefix('companies')->group(function () {
@@ -81,8 +98,6 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::prefix('posts')->group(function () {
-        Route::get('/', [PostController::class, 'index']);
-        Route::get('/show-post/{id}', [PostController::class, 'show']);
         Route::post('/', [PostController::class, 'store']);
         Route::put('/{id}', [PostController::class, 'update']);
         Route::delete('/{id}', [PostController::class, 'destroy']);
@@ -118,6 +133,17 @@ Route::middleware(['auth'])->group(function () {
         });
         Route::put('/{id}', [UserController::class, 'update']);
         Route::get('/{id}', [UserController::class, 'show']);
+<<<<<<< HEAD
+=======
+    });
+
+    Route::prefix('applications')->group(function () {
+        Route::post('/', [ApplicationController::class, 'create']);
+        Route::put('/{id}', [ApplicationController::class, 'update']);
+        Route::post('/{id}/change-state', [ApplicationController::class, 'changeState']);
+        Route::delete('/{id}', [ApplicationController::class, 'delete']);
+        Route::get('/{id}', [ApplicationController::class, 'show']);
+>>>>>>> 42801cf6aa7ddd39678eca989aeb5e217fcf4bc5
     });
 });
 // Route fallback execute when route not found in routes in api.php

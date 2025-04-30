@@ -19,9 +19,8 @@ return new class extends Migration
             $table->float('price');
             $table->unsignedBigInteger('level_id');
             $table->json('required_skills'); // Array: ["Laravel", "React"]
-            $table->float('min_experience_years');
+            $table->integer('min_experience_years');
             $table->unsignedBigInteger('category_id');
-            $table->integer('number_of_employee');
             $table->timestamps();
 
             $table->foreign('level_id')->references('id')->on('levels')->onDelete('cascade');

@@ -19,7 +19,7 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
     protected $keyType    = 'string';
     public $incrementing  = false;
 
-    protected $fillable = ['username', 'email', 'password', 'role_id', 'remember_token', 'phone_number', 'profile_picture', 'is_verified'];
+    protected $fillable = ['username', 'email', 'password', 'role_id', 'phone_number', 'profile_picture', 'is_verified'];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -46,7 +46,7 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
      * @return array<string, string>
      *
      */
-    protected function casts(): array
+    public function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
@@ -83,8 +83,17 @@ class User extends Authenticatable implements MustVerifyEmail, JWTSubject
         return $this->getKey();
     }
 
+    public function role(){
+        return $this->belongsTo(Role::class, 'role_id', 'id');
+    }
+
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function company()
+    {
+        return $this->hasOne(Company::class);
     }
 }

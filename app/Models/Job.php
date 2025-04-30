@@ -12,11 +12,11 @@ class Job extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     public function post()
     {
-        return $this->belongsTo(Post::class, 'id_post');
+        return $this->belongsTo(Post::class, 'post_id');
     }
 
     public function contract()

@@ -10,7 +10,7 @@ class Post extends Model
 
     // protected $fillable = ['posted_by', 'title', 'description', 'price', 'number_of_employee', 'category_id'];
 
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     public function level ()
     {
@@ -45,7 +45,7 @@ class Post extends Model
 
     public function job()
     {
-        return $this->hasMany(Job::class,'post_id');
+        return $this->hasOne(Job::class, 'post_id');
     }
 
     public function company()

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('contracts', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('contract_type');
-            $table->uuid('contract_type_id'); 
+            $table->string('contract_type'); 
+            $table->uuid('contract_type_id'); // polymorphic relation 
             $table->uuid('provider_id');
             $table->timestamp('contract_date')->useCurrent();
             $table->enum('status', ['active', 'completed', 'terminated', 'pending'])->default('pending');
