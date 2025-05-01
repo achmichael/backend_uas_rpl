@@ -12,7 +12,7 @@ use Illuminate\Validation\ValidationException;
  *     name="Portfolios",
  *     description="Data terkait portofolio pengguna"
  * )
- * 
+ *
  * @OA\Schema(
  *     schema="Portfolio",
  *     type="object",
@@ -78,25 +78,15 @@ class PortofolioController extends Controller
         $data['user_id'] = auth()->id;
         $portofolio = Portofolio::create($data);
         if(! $portofolio){
-            return response()->json([
-                'succes'    => false,
-                'message'   => 'invalid check the required again',
-            ]);
-
+            return error('invalid create portofolio',404);
         }
-            return response()->json([
-                'succes'    => true,
-                'data'   => $portofolio,
-            ]);
+        return success($portofolio,'succes create portofolio',201);
         }catch(ValidationException $e){
-            return response()->json([
-                'message'   => $e->getMessage(),
-                'errors'    => $e->errors(),
-            ]);
+            return errorValidation($e->getMessage(),$e->errors(),404);
         }
     }
 
-    
+
     /**
      * @OA\Put(
      *     path="/api/portfolios/{id}",
@@ -155,27 +145,19 @@ class PortofolioController extends Controller
 
             $portofolio = Portofolio::find($id);
             if(! $portofolio){
-                return response()->json([
-                    'succes'    => false,
-                    'message'   => 'invalid check the required again',
-                ]);
+                return error('portofolio not found',404);
+
 
             }
             $portofolio->updated($request->all());
-            return response()->json([
-                'status'    => 'succes',
-                'data'      => $portofolio,
-            ]);
+            return success($id,'success update portofolio',200);
 
         }catch(ValidationException $e){
-            return response()->json([
-            'massage' => $e->getMessage(),
-            'error'  => $e->errors(),
-            ],422);
+           return errorValidation($e->getMessage(),$e->errors(),422);
         }
     }
 
-    
+
     /**
      * @OA\Delete(
      *     path="/api/portfolios/{id}",
@@ -205,20 +187,15 @@ class PortofolioController extends Controller
      *     )
      * )
      */
-    
+
     public function delete($id){
         $portofolio = Portofolio::find($id);
         if(! $portofolio){
-            return response()->json([
-                'massage' => 'error',
-            ]);
+          return error('portofolio not found',404);
         }
 
         $portofolio->delete($id);
-        return response()->json([
-            'status'  => 'success',
-            'message' => 'Portofolio deleted successfully',
-        ]);
+        return success($id,'delete has already succesfully',200);
 
     }
 

@@ -22,16 +22,9 @@ class PaymentMethodController extends Controller
 
             $paymentMethod = PaymentMethod::create($request->all());
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Payment method created successfully',
-                'data'    => $paymentMethod,
-            ]);
+          return success($paymentMethod,'payment method create succesfully',200);
         } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], 422);
+            return errorValidation($e->getMessage(),$e->errors(),400);
         }
     }
 
@@ -49,26 +42,16 @@ class PaymentMethodController extends Controller
 
             $paymentMethod = PaymentMethod::find($id);
             if (! $paymentMethod) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Payment method not found',
-                ], 404);
+                return error('paymentmethod not found',404);
             }
 
             $paymentMethod->update($request->only([
                 'name', 'type', 'provider', 'account_number', 'currency', 'status',
             ]));
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Payment method updated successfully',
-                'data'    => $paymentMethod,
-            ]);
+            return success($paymentMethod,'paymentmethod update successfully',201);
         } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], 422);
+            return errorValidation($e->getMessage(),$e->errors(),422);
         }
     }
 
@@ -76,16 +59,10 @@ class PaymentMethodController extends Controller
     {
         $paymentMethod = PaymentMethod::find($id);
         if (! $paymentMethod) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Payment method not found',
-            ], 404);
+           return error('paymentmethod not found',404);
         }
 
         $paymentMethod->delete();
-        return response()->json([
-            'success' => true,
-            'message' => 'Payment method deleted successfully',
-        ]);
+        return success($id,'delete data successfully',200);
     }
 }

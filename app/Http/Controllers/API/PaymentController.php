@@ -3,6 +3,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Midtrans\Config;
 use Midtrans\Snap;
 
@@ -18,10 +19,7 @@ class PaymentController extends Controller
 
             $contract = \App\Models\Contract::with(['contract_type', 'client'])->find($request->input('contract_id'));
             if (! $contract) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Contract not found',
-                ], 404);
+                return error('contract not found',400);
             }
 
             $transactionDetails = [
@@ -49,16 +47,10 @@ class PaymentController extends Controller
 
             $snapToken = Snap::getSnapToken($transaction);
 
-            return response()->json([
-                'success'    => true,
-                'snap_token' => $snapToken,
-            ]);
+            return success($snapToken,'success get snaptoken',200);
 
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], 500);
+        } catch (ValidationException $e) {
+            return errorValidation($e->getMessage(),$e->errors(),400);
         }
     }
 

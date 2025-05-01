@@ -69,10 +69,7 @@ class JobController extends Controller
         DB::enableQueryLog();
         $jobs = Job::with(['post.level'])->get();
         Log::info('Query log', DB::getQueryLog());
-        return response()->json([
-            'succes' => 'succes',
-            'data'   => $jobs,
-        ]);
+        return success($jobs,'successfully');
     }
 
     /**
@@ -130,7 +127,7 @@ class JobController extends Controller
                 'type_salary'          => 'required',
                 'system'               => 'required',
             ]);
-            
+
             $post = DB::transaction(function () use ($request) {
                 $user = JWTAuth::parseToken()->authenticate();
 
@@ -159,14 +156,11 @@ class JobController extends Controller
 
             return success($post->load('job'), 'Successfully created', 201);
         } catch (ValidationException $e) {
-            return response()->json([
-                'massage' => $e->getMessage(),
-                'errors'  => $e->errors(),
-            ], 422);
+            return errorValidation($e->getMessage(),$e->errors(),422);
         }
     }
 
-    /**
+    /** 
      * @OA\Get(
      *     path="/api/jobs/{id}",
      *     summary="Get job details",
@@ -201,15 +195,9 @@ class JobController extends Controller
     {
         $job = Job::with(['post'])->find($id);
         if (! $job) {
-            return response()->json([
-                'succes'  => false,
-                'massage' => 'job apa sih yang kamu cari',
-            ]);
+            return error('job not found',404);
         }
-        return response()->json([
-            'succes' => true,
-            'data'   => $job,
-        ]);
+        return success($job,'successfully',200);
     }
 
     public function search(Request $request)
@@ -219,10 +207,8 @@ class JobController extends Controller
             ->orWhere('description', 'like', '%' . $request->q . '%')
             ->get();
 
-        return response()->json([
-            'status' => 'succes',
-            'data'   => $Jobs,
-        ]);
+        return success($Jobs,'succesfuly',200);
+
     }
 
     /**
@@ -291,23 +277,13 @@ class JobController extends Controller
             $job = Job::find($id);
 
             if (! $job) {
-                return response()->json([
-                    'massage' => 'Job not found',
-                ], 404);
+                return error("job not found",404);
             }
 
             $job->update($request->all());
-            return response()->json(
-                [
-                    'status' => 'succes',
-                    'data'   => $job,
-                ]);
+            return success($job,'job update successfully',202);
         } catch (ValidationException $e) {
-            return response()->json(
-                [
-                    'massage' => $e->getMessage(),
-                    'errors'  => $e->errors(),
-                ], 422);
+            return errorValidation($e->getMessage(),$e->errors(),422);
         }
     }
 
@@ -347,9 +323,7 @@ class JobController extends Controller
         $job = Job::find($id);
 
         if (! $job) {
-            return response()->json([
-                'massage' => 'Job not found',
-            ], 404);
+            return error('job not found',404);
         }
         $job->delete();
         return response()->json([

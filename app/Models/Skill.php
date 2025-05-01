@@ -2,11 +2,9 @@
 
 namespace App\Models;
 
-use App\Helpers\UUID;
 use Illuminate\Database\Eloquent\Model;
 
 class Skill extends Model
 {
-    use UUID;
     protected $fillable = ['skill_name', 'description'];
 }

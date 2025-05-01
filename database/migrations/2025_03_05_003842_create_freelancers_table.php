@@ -12,17 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('freelancers', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name');
+            $table->text('description');
             $table->uuid('user_id');
             $table->json('skills'); // Array: ["Laravel", "React"]
             $table->integer('experience_years');
             $table->float('rating');
+            $table->float('salary');
+            $table->uuid('portofolio_id');
             $table->unsignedBigInteger('category_id'); // Website Dev, Mobile Dev, dsb.
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->foreign('portofolio_id')->references('id')->on('portofolios')->onDelete('cascade');
         });
     }
 

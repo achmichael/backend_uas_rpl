@@ -59,36 +59,36 @@ Route::middleware(['jwt.auth'])->group(function () {
         Route::put('/{id}', [PortofolioController::class, 'update']);
         Route::delete('/{id}', [PortofolioController::class, 'delete']);
     });
-    
+
     Route::prefix('user_profiles')->group(function () {
         Route::post('/', [UserProfileController::class, 'create']);
     });
-    
+
     Route::prefix('certificates')->group(function () {
         Route::post('/', [CertificateController::class, 'certificate']);
         Route::put('/{id}', [CertificateController::class, 'update']);
         Route::delete('/{id}', [CertificateController::class, 'delete']);
     });
-    
+
     Route::prefix('catalogs')->group(function () {
         Route::post('/', [CatalogController::class, 'catalog']);
         Route::put('/{id}', [CatalogController::class, 'update']);
         Route::delete('/{id}', [CatalogController::class, 'delete']);
     });
-    
+
     Route::prefix('locations')->group(function () {
         Route::post('/', [LocationController::class, 'create']);
         Route::put('/{id}', [LocationController::class, 'update']);
         Route::delete('/{id}', [LocationController::class, 'delete']);
     });
-    
+
     Route::prefix('jobs')->group(function () {
         Route::post('/', [JobController::class, 'create']);
         Route::put('/{id}', [JobController::class, 'update']);
         Route::delete('/{id}', [JobController::class, 'delete']);
         Route::post('/company-jobs', [JobController::class, 'jobsByCompany']);
     });
-    
+
     Route::prefix('companies')->group(function () {
         Route::get('/', [CompanyController::class, 'index']);
         Route::post('/', [CompanyController::class, 'create']);
@@ -96,14 +96,14 @@ Route::middleware(['jwt.auth'])->group(function () {
         Route::put('/{id}', [CompanyController::class, 'update']);
         Route::delete('/{id}', [CompanyController::class, 'delete']);
     });
-    
+
     Route::prefix('posts')->group(function () {
         Route::post('/', [PostController::class, 'store']);
         Route::put('/{id}', [PostController::class, 'update']);
         Route::delete('/{id}', [PostController::class, 'destroy']);
         Route::get('/freelancer/{id}', [PostController::class, 'recommendFreelancer']);
     });
-    
+
     Route::prefix('freelancers')->group(function () {
         Route::get('/', [FreelancerController::class, 'index']);
         Route::get('/{id}', [FreelancerController::class, 'show']);
@@ -111,19 +111,19 @@ Route::middleware(['jwt.auth'])->group(function () {
         Route::put('/{id}', [FreelancerController::class, 'update']);
         Route::delete('/{id}', [FreelancerController::class, 'destroy']);
     });
-    
+
     Route::prefix('contracts')->group(function () {
         Route::get('/', [ContractController::class, 'contractByUser']);
         Route::post('/', [ContractController::class, 'add']);
         Route::get('/{id}', [ContractController::class, 'show']);
     });
-    
+
     Route::prefix('payments')->group(function (){
         Route::post('/pay', [PaymentController::class, 'getSnapToken']);
-        // this route can be used to check the payment status after the payment is made, and can be configured in the payment provider dashboard 
+        // this route can be used to check the payment status after the payment is made, and can be configured in the payment provider dashboard
         Route::post('/callback', [PaymentController::class, 'handleCallback']);
     });
-    
+
     Route::prefix('users')->group(function () {
         Route::prefix('skills')->group(function () {
             Route::get('/', [UserSkillController::class, 'index']);
@@ -133,7 +133,7 @@ Route::middleware(['jwt.auth'])->group(function () {
         });
         Route::put('/{id}', [UserController::class, 'update']);
         Route::get('/{id}', [UserController::class, 'show']);
-    });    
+    });
 
     Route::prefix('applications')->group(function () {
         Route::post('/', [ApplicationController::class, 'create']);

@@ -109,15 +109,9 @@ class ContractController extends Controller
 
             $contract = Contract::create($request->all());
 
-            return response()->json([
-                'success' => true,
-                'data'    => $contract,
-            ], 201);
+            return success($contract, 'succes create contract', 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'errors'  => $e->errors(),
-            ], 422);
+            return errorValidation($e->getMessage(),$e->errors(),422);
         }
     }
 
@@ -156,16 +150,10 @@ class ContractController extends Controller
         $contract = Contract::with(['post', 'client', 'provider', 'milestones'])->find($id);
 
         if (! $contract) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Contract not found.',
-            ], 404);
+            return error('contract is empty',404);
         }
 
-        return response()->json([
-            'success' => true,
-            'data'    => $contract,
-        ]);
+        return success($contract,'succes get contract',200);
     }
 
     public function contractByUser(Request $request)

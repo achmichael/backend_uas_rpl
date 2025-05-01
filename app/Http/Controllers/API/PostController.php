@@ -120,15 +120,10 @@ class PostController extends Controller
             $data['user_id'] = JWTAuth::parseToken()->authenticate()->id;
             $post            = Post::create($data);
 
-            return response()->json([
-                'status' => 'success',
-                'data'   => $post,
-            ]);
+            return success($post,'create post has successfully',200);
+
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'errors'  => $e->errors(),
-            ], 422);
+            return errorValidation($e->getMessage(),$e->errors(),422);
         }
     }
 
@@ -139,10 +134,7 @@ class PostController extends Controller
             ->orWhere('description', 'like', '%' . $request->q . '%')
             ->get();
 
-        return response()->json([
-            'status' => 'success',
-            'data'   => $posts,
-        ]);
+        return success($posts,'successfully',200);
     }
 
     /**
@@ -180,15 +172,9 @@ class PostController extends Controller
     {
         $post = Post::with(['category', 'user', 'reviews'])->find($id);
         if (! $post) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Post not found bro',
-            ], 404);
+            return error('post not found',404);
         }
-        return response()->json([
-            'success' => true,
-            'data'    => $post,
-        ]);
+        return success($post,'success',200);
     }
 
     /**
@@ -254,23 +240,15 @@ class PostController extends Controller
             $post = Post::find($id);
 
             if (! $post) {
-                return response()->json([
-                    'message' => 'Post not found',
-                ], 404);
+                return error('post not found',404);
             }
 
             $post->update($request->all());
 
-            return response()->json([
-                'status' => 'success',
-                'data'   => $post,
-            ]);
+            return success($id,'update post has successfully',200);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-                'errors'  => $e->errors(),
-            ], 422);
+          return errorValidation($e->getMessage(),$e->errors(),422);
         }
     }
 
@@ -317,14 +295,11 @@ class PostController extends Controller
     {
         $post = Post::find($id);
         if (! $post) {
-            return response()->json(['message' => 'Post not found'], 404);
+            return error('post not found',404);
         }
 
         $freelancers = $postService->matchingFreelancer($post);
-        return response()->json([
-            'status' => 'success',
-            'data'   => $freelancers,
-        ]);
+        return success($id,'success get post',200);
     }
 
     /**
@@ -363,14 +338,10 @@ class PostController extends Controller
     {
         $post = Post::find($id);
         if (! $post) {
-            return response()->json([
-                'message' => 'Post not found',
-            ], 404);
+            return error('post not found',404);
         }
         $post->delete();
-        return response()->json([
-            'status'  => 'success',
-            'message' => 'Post deleted successfully',
-        ]);
+        return success($post, 'success delete data',422);
     }
+
 }

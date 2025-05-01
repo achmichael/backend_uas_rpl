@@ -87,9 +87,9 @@ class CertificateController extends Controller
             $data['user_id'] = auth()->id;
             $certificate     = Certificate::create($data);
             if (! $certificate) {
-                return error('invalid add certificate', 400);
+                return error('invalid create certificate', 400);
             }
-            return success($certificate, 'Success add certificate', 200);
+            return success($certificate, 'Success create certificate', 201);
 
         } catch (ValidationException $e) {
             return errorValidation($e->getMessage(), $e->errors());
@@ -206,7 +206,7 @@ class CertificateController extends Controller
                 return error('Certificate not found', 404);
             }
             $certificate->update($request->all());
-            return success($certificate, 'Certificate updated successfully', 200);
+            return success($id, 'Certificate updated successfully', 200);
         } catch (ValidationException $e) {
             return errorValidation($e->getMessage(), $e->errors(), 422);
         }
