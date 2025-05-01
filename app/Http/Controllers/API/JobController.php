@@ -1,14 +1,14 @@
 <?php
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use App\Models\Job;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
  * @OA\Tag(
@@ -69,7 +69,7 @@ class JobController extends Controller
         DB::enableQueryLog();
         $jobs = Job::with(['post.level'])->get();
         Log::info('Query log', DB::getQueryLog());
-        return success($jobs,'successfully');
+        return success($jobs, 'successfully');
     }
 
     /**
@@ -156,11 +156,11 @@ class JobController extends Controller
 
             return success($post->load('job'), 'Successfully created', 201);
         } catch (ValidationException $e) {
-            return errorValidation($e->getMessage(),$e->errors(),422);
+            return errorValidation($e->getMessage(), $e->errors(), 422);
         }
     }
 
-    /** 
+    /**
      * @OA\Get(
      *     path="/api/jobs/{id}",
      *     summary="Get job details",
@@ -195,9 +195,9 @@ class JobController extends Controller
     {
         $job = Job::with(['post'])->find($id);
         if (! $job) {
-            return error('job not found',404);
+            return error('job not found', 404);
         }
-        return success($job,'successfully',200);
+        return success($job, 'successfully', 200);
     }
 
     public function search(Request $request)
@@ -207,7 +207,7 @@ class JobController extends Controller
             ->orWhere('description', 'like', '%' . $request->q . '%')
             ->get();
 
-        return success($Jobs,'succesfuly',200);
+        return success($Jobs, 'succesfuly', 200);
 
     }
 
@@ -277,13 +277,13 @@ class JobController extends Controller
             $job = Job::find($id);
 
             if (! $job) {
-                return error("job not found",404);
+                return error("job not found", 404);
             }
 
             $job->update($request->all());
-            return success($job,'job update successfully',202);
+            return success($job, 'job update successfully', 202);
         } catch (ValidationException $e) {
-            return errorValidation($e->getMessage(),$e->errors(),422);
+            return errorValidation($e->getMessage(), $e->errors(), 422);
         }
     }
 
@@ -323,7 +323,7 @@ class JobController extends Controller
         $job = Job::find($id);
 
         if (! $job) {
-            return error('job not found',404);
+            return error('job not found', 404);
         }
         $job->delete();
         return response()->json([
@@ -365,23 +365,14 @@ class JobController extends Controller
                 'id' => 'required|uuid|exists:users,id',
             ]);
 
-            $jobs = Job::with(['post.applications', 'post.user.company.employees'])
-                ->whereHas('post', fn($q) => $q->where('posted_by', $request->id))
-                ->where('status', 'open')
-                ->get();
-
-            $jobs->each(function ($job) {
-                $job->applications_count = $job->post ? $job->post->applications->count() : 0;
-            });
-
-            $jobs->each(function ($job) {
-                $job->teams_count = $job->post ? $job->post->user->company->employees->count() : 0;
-            });
+            $jobs = Job::with([
+                'post'              => fn ($q) => $q->withCount('applications'),
+                'post.user.company' => fn ($q) => $q->withCount('employees'),
+            ])->whereHas('post', fn($q) => $q->where('posted_by', $request->id))->where('status', 'open')->get();
 
             return success($jobs, 'Data pekerjaan berdasarkan company id berhasil diambil');
         } catch (ValidationException $e) {
             return error($e->errors(), 422);
         }
     }
-
 }

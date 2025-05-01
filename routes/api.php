@@ -86,7 +86,7 @@ Route::middleware(['jwt.auth'])->group(function () {
         Route::post('/', [JobController::class, 'create']);
         Route::put('/{id}', [JobController::class, 'update']);
         Route::delete('/{id}', [JobController::class, 'delete']);
-        Route::post('/company-jobs', [JobController::class, 'jobsByCompany']);
+        Route::post('/company-jobs', [JobController::class, 'jobsByCompany'])->withoutMiddleware('jwt.auth');
     });
 
     Route::prefix('companies')->group(function () {
