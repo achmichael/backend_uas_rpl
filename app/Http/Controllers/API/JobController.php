@@ -154,7 +154,7 @@ class JobController extends Controller
                 return $post;
             });
 
-            return success($post->load('job'), 'Successfully created', 201);
+            return success($post->load('job'), 'Successfully created jobs', 201);
         } catch (ValidationException $e) {
             return errorValidation($e->getMessage(), $e->errors(), 422);
         }
@@ -369,7 +369,7 @@ class JobController extends Controller
                 'post'              => fn ($q) => $q->withCount('applications'),
                 'post.user.company' => fn ($q) => $q->withCount('employees'),
                 'post.applications.applicant'
-            ])->whereHas('post', fn($q) => $q->where('posted_by', $request->id))->where('status', 'open')->get();
+            ])->whereHas('post', fn($q) => $q->where('posted_by', $request->id))->get();
 
             return success($jobs, 'Data pekerjaan berdasarkan company id berhasil diambil');
         } catch (ValidationException $e) {
