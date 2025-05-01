@@ -368,7 +368,8 @@ class JobController extends Controller
             $jobs = Job::with([
                 'post'              => fn ($q) => $q->withCount('applications'),
                 'post.user.company' => fn ($q) => $q->withCount('employees'),
-                'post.applications.applicant'
+                'post.applications.applicant',
+                'post.user.company.employees'
             ])->whereHas('post', fn($q) => $q->where('posted_by', $request->id))->get();
 
             return success($jobs, 'Data pekerjaan berdasarkan company id berhasil diambil');
