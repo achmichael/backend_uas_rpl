@@ -366,7 +366,7 @@ class JobController extends Controller
                 'id' => 'required|uuid|exists:users,id',
             ]);
 
-            $user = User::with(['company.employees'])->find($request->id);
+            $user = User::with(['company.employees.employee'])->find($request->id);
             
             $jobs = Job::with([
                 'post'              => fn ($q) => $q->withCount('applications'),
