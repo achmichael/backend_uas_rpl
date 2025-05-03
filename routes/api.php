@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\CatalogController;
+use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\CertificateController;
 use App\Http\Controllers\API\CompanyController;
 use App\Http\Controllers\API\ContractController;
@@ -52,6 +53,8 @@ Route::prefix('posts')->group(function () {
 });
 
 Route::get('/verify-token', [AuthController::class, 'verifyToken']);
+
+Route::get('/categories', [CategoryController::class, 'index']);
 
 Route::middleware(['jwt.auth'])->group(function () {
     Route::prefix('portofolios')->group(function () {
