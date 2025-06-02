@@ -1,14 +1,15 @@
 <?php
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\Job;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\ValidationException;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Illuminate\Validation\ValidationException;
 
 /**
  * @OA\Tag(
@@ -154,7 +155,7 @@ class JobController extends Controller
                 return $post;
             });
 
-            return success($post->load('job'), 'Successfully created', 201);
+            return success($post->load('job'), 'Successfully created jobs', 201);
         } catch (ValidationException $e) {
             return errorValidation($e->getMessage(), $e->errors(), 422);
         }
@@ -365,13 +366,17 @@ class JobController extends Controller
                 'id' => 'required|uuid|exists:users,id',
             ]);
 
+            $user = User::with(['company.employees.employee'])->find($request->id);
+            
             $jobs = Job::with([
                 'post'              => fn ($q) => $q->withCount('applications'),
-                'post.user.company' => fn ($q) => $q->withCount('employees'),
                 'post.applications.applicant'
-            ])->whereHas('post', fn($q) => $q->where('posted_by', $request->id))->where('status', 'open')->get();
+            ])->whereHas('post', fn($q) => $q->where('posted_by', $request->id))->get();
 
-            return success($jobs, 'Data pekerjaan berdasarkan company id berhasil diambil');
+            return success([
+                'user' => $user,
+                'jobs' => $jobs
+            ], 'Data pekerjaan berdasarkan company id berhasil diambil');
         } catch (ValidationException $e) {
             return error($e->errors(), 422);
         }
