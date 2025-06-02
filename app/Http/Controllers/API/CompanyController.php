@@ -1,11 +1,12 @@
 <?php
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Illuminate\Validation\ValidationException;
 
 /**
@@ -17,15 +18,17 @@ use Illuminate\Validation\ValidationException;
  * @OA\Schema(
  *     schema="Company",
  *     type="object",
- *     @OA\Property(property="id", type="integer", example=1),
+ *     @OA\Property(property="id", type="string", format="uuid", example="550e8400-e29b-41d4-a716-446655440000"),
+ *     @OA\Property(property="user_id", type="string", format="uuid", example="550e8400-e29b-41d4-a716-446655440001"),
+ *     @OA\Property(property="description", type="string", example="A leading tech company"),
+ *     @OA\Property(property="slug", type="string", example="acme-corporation"),
  *     @OA\Property(property="name", type="string", example="Acme Corporation"),
- *     @OA\Property(property="image", type="string", example="company_image.jpg"),
- *     @OA\Property(property="addres", type="string", example="123 Main Street"),
- *     @OA\Property(property="phone", type="string", example="123456789"),
- *     @OA\Property(property="email", type="string", format="email", example="info@acme.com"),
+ *     @OA\Property(property="social_links", type="object", example={"linkedin": "https://linkedin.com/company/acme", "twitter": "https://twitter.com/acme"}),
+ *     @OA\Property(property="cover_image", type="string", example="company_cover_image.jpg"),
+ *     @OA\Property(property="address", type="string", example="123 Main Street"),
+ *     @OA\Property(property="industry", type="string", example="Technology"),
  *     @OA\Property(property="website", type="string", example="https://acme.com"),
- *     @OA\Property(property="founded", type="integer", example=2000),
- *     @OA\Property(property="user_id", type="integer", example=1)
+ *     @OA\Property(property="founded_at", type="string", format="date-time", example="2000-01-01T00:00:00Z")
  * )
  */
 class CompanyController extends Controller
@@ -62,7 +65,6 @@ class CompanyController extends Controller
         if ($request->has('q')) {
             return $this->search($request);
         }
-        DB::enableQueryLog();
         $company = Company::with('user')->get();
         Log::info('Query log', DB::getQueryLog());
         return success($company, 'success get all companies', 200);
@@ -76,14 +78,16 @@ class CompanyController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"name", "image", "addres", "phone", "email", "website", "founded"},
+     *             required={"name", "cover_image", "address", "industry", "website", "slug"},
      *             @OA\Property(property="name", type="string", example="Acme Corporation"),
-     *             @OA\Property(property="image", type="string", example="company_image.jpg"),
-     *             @OA\Property(property="addres", type="string", example="123 Main Street"),
-     *             @OA\Property(property="phone", type="string", example="123456789"),
-     *             @OA\Property(property="email", type="string", format="email", example="info@acme.com"),
+     *             @OA\Property(property="description", type="string", example="A leading tech company"),
+     *             @OA\Property(property="slug", type="string", example="acme-corporation"),
+     *             @OA\Property(property="cover_image", type="string", example="company_cover_image.jpg"),
+     *             @OA\Property(property="address", type="string", example="123 Main Street"),
+     *             @OA\Property(property="industry", type="string", example="Technology"),
      *             @OA\Property(property="website", type="string", example="https://acme.com"),
-     *             @OA\Property(property="founded", type="integer", example=2000)
+     *             @OA\Property(property="social_links", type="object", example={"linkedin": "https://linkedin.com/company/acme"}),
+     *             @OA\Property(property="founded_at", type="string", format="date-time", example="2000-01-01T00:00:00Z")
      *         )
      *     ),
      *     @OA\Response(
@@ -109,17 +113,19 @@ class CompanyController extends Controller
     {
         try {
             $request->validate([
-                'name'    => 'required|string',
-                'image'   => 'required|string',
-                'address'  => 'required|string',
-                'phone'   => 'required|string',
-                'email'   => 'required|email',
-                'website' => 'required|string',
-                'founded' => 'required|numeric',
+                'name'        => 'required|string',
+                'cover_image' => 'required|string',
+                'address'     => 'required|string',
+                'industry'    => 'required|string',
+                'website'     => 'required|string',
+                'slug'        => 'required|string|unique:companies,slug',
+                'description' => 'nullable|string',
+                'social_links'=> 'nullable|json',
+                'founded_at'  => 'nullable|date',
             ]);
 
             $data            = $request->all();
-            $data['user_id'] = auth()->id;
+            $data['user_id'] = JWTAuth::parseToken()->authenticate()->id;
             $company         = Company::create($data);
 
             return success($company, 'success create company', 200);
@@ -164,7 +170,7 @@ class CompanyController extends Controller
         if (! $company) {
             return error('company is nothing', 404);
         }
-        return success($id, 'success get company', 200);
+        return success($company, 'success get company', 200);
     }
 
     public function showByUserId($userId)
@@ -208,14 +214,16 @@ class CompanyController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"name", "image", "addres", "phone", "email", "website", "founded"},
+     *             required={"name", "cover_image", "address", "industry", "website", "slug"},
      *             @OA\Property(property="name", type="string", example="Acme Corporation Updated"),
-     *             @OA\Property(property="image", type="string", example="company_image_updated.jpg"),
-     *             @OA\Property(property="addres", type="string", example="456 New Street"),
-     *             @OA\Property(property="phone", type="string", example="987654321"),
-     *             @OA\Property(property="email", type="string", format="email", example="new@acme.com"),
+     *             @OA\Property(property="description", type="string", example="An updated leading tech company"),
+     *             @OA\Property(property="slug", type="string", example="acme-corporation-updated"),
+     *             @OA\Property(property="cover_image", type="string", example="company_cover_image_updated.jpg"),
+     *             @OA\Property(property="address", type="string", example="456 New Street"),
+     *             @OA\Property(property="industry", type="string", example="Software Technology"),
      *             @OA\Property(property="website", type="string", example="https://acme-updated.com"),
-     *             @OA\Property(property="founded", type="integer", example=2001)
+     *             @OA\Property(property="social_links", type="object", example={"linkedin": "https://linkedin.com/company/acme-updated"}),
+     *             @OA\Property(property="founded_at", type="string", format="date-time", example="2001-01-01T00:00:00Z")
      *         )
      *     ),
      *     @OA\Response(
@@ -248,13 +256,15 @@ class CompanyController extends Controller
     {
         try {
             $request->validate([
-                'name'    => 'required|string',
-                'image'   => 'required|string',
-                'address'  => 'required|string',
-                'phone'   => 'required|numeric',
-                'email'   => 'required|email',
-                'website' => 'required|string',
-                'founded' => 'required|numeric',
+                'name'        => 'required|string',
+                'cover_image' => 'required|string',
+                'address'     => 'required|string',
+                'industry'    => 'required|string',
+                'website'     => 'required|string',
+                'slug'        => 'required|string|unique:companies,slug,'.$id,
+                'description' => 'nullable|string',
+                'social_links'=> 'nullable|json',
+                'founded_at'  => 'nullable|date',
             ]);
 
             $company = Company::find($id);

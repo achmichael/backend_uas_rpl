@@ -49,10 +49,11 @@ class Post extends Model
         return $this->hasOne(Job::class, 'post_id');
     }
 
-    public function company()
-    {
-        return $this->hasMany(Company::class);
-    }
+    // Companies no longer belong to posts based on the updated migration
+    // public function company()
+    // {
+    //     return $this->hasMany(Company::class);
+    // }
 
     protected $casts = [ // add this line to your model to cast the required_skills attribute to an array in the code and to a JSON when insert to database and reconverting it to an array when fetching from the database
         'required_skills' => 'array',

@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('companies', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('user_id');
+            $table->text('description')->nullable();
+            $table->string('slug')->unique(); // for SEO and URL
             $table->string('name');
+            $table->json('social_links')->nullable(); // social media links
             $table->string('cover_image'); // banner in profile company
             $table->text('address');
             $table->string('industry');

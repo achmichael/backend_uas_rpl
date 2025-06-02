@@ -10,18 +10,14 @@ class Company extends Model
 {
     use UUID;
     protected $guarded = ['id'];
+    
+    protected $casts = [
+        'social_links' => 'json',
+        'founded_at' => 'datetime'
+    ];
 
     public function user(){
         return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function job(){
-        return $this->belongsTo(Job::class, 'job_id');
-    }
-
-    public function post()
-    {
-        return $this->belongsTo(Post::class);
     }
 
     public function employees()

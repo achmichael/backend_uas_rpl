@@ -90,8 +90,6 @@ class DatabaseSeeder extends Seeder
             'description' => 'Expert level with good knowledge and skills in the field.',
         ]);
 
-
-
         $post = Post::create([
             'title' => 'Web Development',
             'description' => 'Create a website or web application for a business or personal use case scenario, with a focus on functionality, user experience, and performance. and great backend service to make application is rapidly',
@@ -117,18 +115,26 @@ class DatabaseSeeder extends Seeder
         Contract::create([
             'contract_type' => Job::class,
             'contract_type_id' => $job->id,
+            'client_id' => User::pluck('id')->random(), 
             'provider_id' => $user->id,
             'contract_date' => now(),
             'status' => 'active',
         ]);
 
         $company = Company::create([
-            'user_id' => $user->id,
-            'name'    => 'bossware',
-            'image'   => 'https://source.unsplash.com/random',
-            'address'  => 'jl gajayana malang, jawa-timur, indonesia',
-            'website' => 'bossware.com',
-            'founded_at' => now(),
+            'user_id'      => $user->id,
+            'name'         => 'bossware',
+            'slug'         => 'bossware',
+            'description'  => 'A leading software development company',
+            'cover_image'  => 'https://source.unsplash.com/random',
+            'address'      => 'jl gajayana malang, jawa-timur, indonesia',
+            'industry'     => 'Technology',
+            'website'      => 'bossware.com',
+            'social_links' => json_encode([
+                'linkedin' => 'https://linkedin.com/company/bossware',
+                'twitter'  => 'https://twitter.com/bossware'
+            ]),
+            'founded_at'   => now(),
         ]);
 
         UserProfile::create([
