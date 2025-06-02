@@ -167,6 +167,19 @@ class CompanyController extends Controller
         return success($id, 'success get company', 200);
     }
 
+    public function showByUserId($userId)
+    {
+        $company = Company::with(['user'])->withCount('employees')
+            ->where('user_id', $userId)
+            ->first();
+        if (!$company)
+        {
+            return error('company not found for this user', 404);
+        }
+
+        return success($company, 'success get company by user id', 200);
+    }
+
     public function search(Request $request)
     {
         $company = Company::with(['user'])

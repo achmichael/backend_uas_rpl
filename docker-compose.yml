@@ -16,6 +16,8 @@ services:
       - backendrpl
     depends_on:
       - mysql
+    restart: unless-stopped
+
   mysql:
     image: mysql:8.0
     container_name: database_server
@@ -28,6 +30,7 @@ services:
       - mysql_data:/var/lib/mysql
     networks:
       - backendrpl
+    restart: unless-stopped
 
 networks:
   backendrpl:
