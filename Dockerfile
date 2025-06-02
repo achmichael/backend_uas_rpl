@@ -16,9 +16,9 @@ COPY wait-for-it.sh /app/wait-for-it.sh
 
 COPY --chmod=755 wait-for-it.sh /app/wait-for-it.sh
 
-RUN chmod +x /app/wait-for-it.sh
-
 WORKDIR /app
+
+RUN chmod +x /app/wait-for-it.sh
 
 RUN composer dump-autoload
 

@@ -7,6 +7,7 @@ services:
     ports:
       - "8000:8000"
     container_name: backend_frankenphp
+    restart: unless-stopped
     environment:
       - HTTPS=true
       - APP_URL=https://api-backendrpl.achmichael.my.id
@@ -16,6 +17,7 @@ services:
       - backendrpl
     depends_on:
       - mysql
+
   mysql:
     image: mysql:8.0
     container_name: database_server
@@ -28,7 +30,8 @@ services:
       - mysql_data:/var/lib/mysql
     networks:
       - backendrpl
-
+    restart: unless-stopped
+    
 networks:
   backendrpl:
 

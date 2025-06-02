@@ -2,11 +2,12 @@
 namespace App\Models;
 
 use App\Helpers\UUID;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    use UUID;
+    use UUID, HasFactory;
 
     // protected $fillable = ['posted_by', 'title', 'description', 'price', 'number_of_employee', 'category_id'];
 

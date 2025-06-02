@@ -94,6 +94,7 @@ Route::middleware(['jwt.auth'])->group(function () {
         Route::post('/', [CompanyController::class, 'create']);
         Route::get('/{id}', [CompanyController::class, 'show']);
         Route::put('/{id}', [CompanyController::class, 'update']);
+        Route::get('/profile/{userId}', [CompanyController::class, 'showByUserId']);
         Route::delete('/{id}', [CompanyController::class, 'delete']);
     });
 

@@ -3,10 +3,11 @@ namespace App\Models;
 
 use App\Helpers\UUID;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Contract extends Model
 {
-    use UUID;
+    use UUID, HasFactory;
 
     protected $fillable = ['contract_type', 'contract_type_id', 'client_id', 'provider_id', 'contract_date', 'status'];
 
@@ -30,8 +31,4 @@ class Contract extends Model
         return $this->belongsTo(User::class, 'provider_id');
     }
 
-    public function milestones()
-    {
-        return $this->hasMany(Milestone::class);
-    }
 }

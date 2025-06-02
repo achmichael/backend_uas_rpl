@@ -100,7 +100,7 @@ class ContractController extends Controller
     {
         try {
             $request->validate([
-                'post_id'       => 'required|exists:posts,id',
+                // 'post_id'       => 'required|exists:posts,id',
                 'client_id'     => ['required', 'exists:users,id', 'different:provider_id', new RoleIdNot(1)],
                 'provider_id'   => ['required', 'exists:users,id', 'different:client_id', new RoleIdNot(1)],
                 'contract_date' => 'required|date',
@@ -147,7 +147,7 @@ class ContractController extends Controller
      */
     public function show($id)
     {
-        $contract = Contract::with(['post', 'client', 'provider', 'milestones'])->find($id);
+        $contract = Contract::with(['post', 'client', 'provider'])->find($id);
 
         if (! $contract) {
             return error('contract is empty',404);
@@ -161,8 +161,9 @@ class ContractController extends Controller
         $request->validate([
             'status' => 'nullable|in:active,completed,terminated',
         ]);
+        
         $userId = JWTAuth::parseToken()->authenticate()->id;
-        $query  = Contract::query()->with(['post', 'client', 'provider', 'milestones'])->whereHas('client', function ($query) use ($userId) {
+        $query  = Contract::query()->with(['post', 'client', 'provider'])->whereHas('client', function ($query) use ($userId) {
             $query->where('user_id', $userId);
         })->orWhereHas('provider', function ($query) use ($userId) {
             $query->where('user_id', $userId);

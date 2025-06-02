@@ -15,8 +15,9 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('user_id');
             $table->string('name');
-            $table->string('image'); // banner in profile company
+            $table->string('cover_image'); // banner in profile company
             $table->text('address');
+            $table->string('industry');
             $table->string('website');
             $table->dateTime('founded_at')->nullable();
             $table->timestamps();
