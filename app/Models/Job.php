@@ -11,7 +11,6 @@ class Job extends Model
     protected $table = 'jobs_table';
     protected $keyType = 'string';
     public $incrementing = false;
-
     protected $guarded = ['id'];
 
     public function post()

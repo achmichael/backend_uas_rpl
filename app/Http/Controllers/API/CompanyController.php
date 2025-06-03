@@ -1,6 +1,8 @@
 <?php
-namespace App\Http\Controllers\API;
+namespace  App\Http\Controllers\API;
 
+use App\Models\Job;
+use App\Models\Post;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -65,6 +67,7 @@ class CompanyController extends Controller
         if ($request->has('q')) {
             return $this->search($request);
         }
+        DB::enableQueryLog();
         $company = Company::with('user')->get();
         Log::info('Query log', DB::getQueryLog());
         return success($company, 'success get all companies', 200);
@@ -125,7 +128,7 @@ class CompanyController extends Controller
             ]);
 
             $data            = $request->all();
-            $data['user_id'] = JWTAuth::parseToken()->authenticate()->id;
+            $data['user_id'] = JWTAuth::parseToken()->authenticate()->id; 
             $company         = Company::create($data);
 
             return success($company, 'success create company', 200);
@@ -170,7 +173,7 @@ class CompanyController extends Controller
         if (! $company) {
             return error('company is nothing', 404);
         }
-        return success($company, 'success get company', 200);
+        return success($id, 'success get company', 200);
     }
 
     public function showByUserId($userId)
@@ -178,12 +181,21 @@ class CompanyController extends Controller
         $company = Company::with(['user'])->withCount('employees')
             ->where('user_id', $userId)
             ->first();
+            
         if (!$company)
         {
             return error('company not found for this user', 404);
         }
 
-        return success($company, 'success get company by user id', 200);
+        $posts = Post::where('posted_by', $userId)->get();
+        
+        $postIds = $posts->pluck('id')->toArray();
+        $jobs = Job::with('post')->whereIn('post_id', $postIds)->get();
+        
+        $response = $company->toArray();
+        $response['jobs'] = $jobs;
+
+        return success($response, 'success get company by user id with jobs', 200);
     }
     
     public function search(Request $request)
@@ -214,16 +226,14 @@ class CompanyController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"name", "cover_image", "address", "industry", "website", "slug"},
+     *             required={"name", "image", "addres", "phone", "email", "website", "founded"},
      *             @OA\Property(property="name", type="string", example="Acme Corporation Updated"),
-     *             @OA\Property(property="description", type="string", example="An updated leading tech company"),
-     *             @OA\Property(property="slug", type="string", example="acme-corporation-updated"),
-     *             @OA\Property(property="cover_image", type="string", example="company_cover_image_updated.jpg"),
-     *             @OA\Property(property="address", type="string", example="456 New Street"),
-     *             @OA\Property(property="industry", type="string", example="Software Technology"),
+     *             @OA\Property(property="image", type="string", example="company_image_updated.jpg"),
+     *             @OA\Property(property="addres", type="string", example="456 New Street"),
+     *             @OA\Property(property="phone", type="string", example="987654321"),
+     *             @OA\Property(property="email", type="string", format="email", example="new@acme.com"),
      *             @OA\Property(property="website", type="string", example="https://acme-updated.com"),
-     *             @OA\Property(property="social_links", type="object", example={"linkedin": "https://linkedin.com/company/acme-updated"}),
-     *             @OA\Property(property="founded_at", type="string", format="date-time", example="2001-01-01T00:00:00Z")
+     *             @OA\Property(property="founded", type="integer", example=2001)
      *         )
      *     ),
      *     @OA\Response(
@@ -256,18 +266,17 @@ class CompanyController extends Controller
     {
         try {
             $request->validate([
-                'name'        => 'required|string',
-                'cover_image' => 'required|string',
-                'address'     => 'required|string',
-                'industry'    => 'required|string',
-                'website'     => 'required|string',
-                'slug'        => 'required|string|unique:companies,slug,'.$id,
-                'description' => 'nullable|string',
-                'social_links'=> 'nullable|json',
-                'founded_at'  => 'nullable|date',
+                'name'    => 'required|string',
+                'image'   => 'required|string',
+                'address'  => 'required|string',
+                'phone'   => 'required|numeric',
+                'email'   => 'required|email',
+                'website' => 'required|string',
+                'founded' => 'required|numeric',
             ]);
 
             $company = Company::find($id);
+
             if (! $company) {
                 return error('company not found', 404);
             }
