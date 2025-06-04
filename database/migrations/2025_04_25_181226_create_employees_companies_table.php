@@ -16,15 +16,17 @@ return new class extends Migration
             $table->uuid('company_id');
             $table->uuid('employee_id');
             $table->string('position', 100);
+
             $table->enum('status', [
                 'active',
                 'inactive',
                 'cuty',
                 'resigned'
             ]);
+
             $table->softDeletes();
             $table->timestamps();
-
+            
             $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
             $table->foreign('employee_id')->references('id')->on('users')->onDelete('cascade');
         });
