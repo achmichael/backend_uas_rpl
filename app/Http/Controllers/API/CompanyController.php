@@ -178,7 +178,7 @@ class CompanyController extends Controller
 
     public function showByUserId($userId)
     {
-        $company = Company::with(['user', 'employees'])->withCount('employees')
+        $company = Company::with(['user', 'employees.employee'])->withCount('employees')
             ->where('user_id', $userId)
             ->first();
             
