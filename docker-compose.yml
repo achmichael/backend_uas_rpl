@@ -1,40 +1,96 @@
 services:
-  frankenphp:
-    build:
-      context: .
-    entrypoint: >
-      sh -c "./wait-for-it.sh mysql:3306 -- php artisan config:cache && php artisan octane:start --server=frankenphp --host=0.0.0.0 --port=8000"
-    ports:
-      - "8000:8000"
-    container_name: backend_frankenphp
-    restart: unless-stopped
-    environment:
-      - HTTPS=true
-      - APP_URL=https://api-backendrpl.achmichael.my.id
-    volumes:
-      - .:/app
-    networks:
-      - backendrpl
-    depends_on:
-      - mysql
+    frankenphp:
+        build:
+            context: ./
+            dockerfile: ./.docker/php/Dockerfile.local
+        ports:
+            - "8000:8000"
+        container_name: backend_frankenphp
+        restart: unless-stopped
+        environment:
+            - HTTPS=true
+            - APP_URL=https://api-backendrpl.achmichael.my.id
+        volumes:
+            - /:${WORKDIR}
+            - ./vendor/:${WORKDIR}/vendor
+        networks:
+            - backendrpl
+        depends_on:
+            - mysql
+            - redis
+            - minio
+            - mailpit
 
-  mysql:
-    image: mysql:8.0
-    container_name: database_server
-    environment:  # Perbaikan disini
-      - MYSQL_DATABASE=laravel
-      - MYSQL_ROOT_PASSWORD=secret
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      - backendrpl
-    restart: unless-stopped
-    
+    mysql:
+        image: mysql:8.0
+        container_name: database_server
+        environment: # Perbaikan disini
+            - MYSQL_DATABASE=laravel
+            - MYSQL_ROOT_PASSWORD=secret
+        ports:
+            - "3306:3306"
+        volumes:
+            - mysql_data:/var/lib/mysql
+        networks:
+            - backendrpl
+        restart: unless-stopped
+        healthcheck:
+            test:
+                - CMD
+                - mysqladmin
+                - ping
+                - -p${DB_PASSWORD}
+            retries: 3
+            timeout: 5s
+    redis:
+        image: redis:alpine
+        ports:
+            - ${FORWARD_REDIS_PORT:-6379}:6379
+        volumes:
+            - ${REDIS_VOLUME_LOCAL:-./database/redis-data}:/data
+        networks:
+            - backendrpl
+        healthcheck:
+            test:
+                - CMD
+                - redis-cli
+                - ping
+            retries: 3
+            timeout: 5s
+    minio:
+        image: minio/minio:latest
+        ports:
+            - ${FORWARD_MINIO_PORT:-9000}:9000
+            - ${FORWARD_MINIO_CONSOLE_PORT:-8900}:8900
+        environment:
+            MINIO_ROOT_USER: ${MINIO_ROOT_USER:-sail}
+            MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-password}
+        volumes:
+            - ${MINIO_VOLUME_LOCAL:-./storage/minio-data}:/data
+        networks:
+            - backendrpl
+        command: minio server /data/minio --console-address ":${FORWARD_MINIO_CONSOLE_PORT}"
+        healthcheck:
+            test:
+                - CMD
+                - curl
+                - -f
+                - http://localhost:${FORWARD_MINIO_PORT}/minio/health/live
+            retries: 3
+            timeout: 5s
+
+    mailpit:
+        image: axllent/mailpit:latest
+        ports:
+            - ${FORWARD_MAILPIT_PORT:-1025}:1025
+            - ${FORWARD_MAILPIT_DASHBOARD_PORT:-8025}:8025
+        volumes:
+            - ${MP_VOLUME_LOCAL:-./storage/mail-data}:/data
+        networks:
+            - backendrpl
+
 networks:
-  backendrpl:
+    backendrpl:
 
 volumes:
-  mysql_data:
-
+    mysql_data:
