@@ -33,13 +33,10 @@ services:
             - backendrpl
         restart: unless-stopped
         healthcheck:
-            test:
-                - CMD
-                - mysqladmin
-                - ping
-                - -p${DB_PASSWORD}
+            test: ["CMD", "mysqladmin", "ping", "-p${DB_PASSWORD}"]
             retries: 3
             timeout: 5s
+
     redis:
         image: redis:alpine
         ports:
@@ -49,11 +46,10 @@ services:
         networks:
             - backendrpl
         healthcheck:
-            test:
-                - redis-cli
-                - ping
+            test: ["CMD", "redis-cli", "ping"]
             retries: 3
             timeout: 5s
+
     minio:
         image: minio/minio:latest
         ports:
@@ -68,13 +64,12 @@ services:
             - backendrpl
         command: minio server /data/minio --console-address ":${FORWARD_MINIO_CONSOLE_PORT}"
         healthcheck:
-            test:
-                - CMD
-                - curl
-                - -f
-                - http://localhost:${FORWARD_MINIO_PORT}/minio/health/live
+            test: ["CMD-SHELL", "curl -f http://localhost:${FORWARD_MINIO_PORT}/minio/health/live || exit 1"]
+            interval: 30s
+            timeout: 10s
             retries: 3
-            timeout: 5s
+            start_period: 5s
+
 
     mailpit:
         image: axllent/mailpit:latest
