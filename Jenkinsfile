@@ -27,6 +27,12 @@ pipeline {
             }
         }
         
+        stage('Preparing .env file') {
+            steps {
+                sh 'cp .env.example .env'
+            }
+        }
+        
         stage('Build Docker Image') {
             steps {
                 sh 'docker compose up -d'
