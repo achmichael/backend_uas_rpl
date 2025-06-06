@@ -21,13 +21,13 @@ pipeline {
             }
         }
 
-        stage('Clean up db container') {
-            steps {
-                sh '''
-                docker rm -f database_server
-                '''
-            }
-        }
+        // stage('Clean up db container') {
+        //     steps {
+        //         sh '''
+        //         docker rm -f database_server
+        //         '''
+        //     }
+        // }
 
         stage('Remove existing image'){
             steps {
