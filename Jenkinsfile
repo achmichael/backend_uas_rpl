@@ -24,7 +24,7 @@ pipeline {
         stage('Clean up db container') {
             steps {
                 sh '''
-                docker rm -f database_server || true
+                docker rm -f database_server
                 '''
             }
         }
@@ -37,7 +37,11 @@ pipeline {
         
         stage('Preparing .env file') {
             steps {
-                sh 'cp .env.example .env'
+                sh '''
+                if [ ! -f .env ]; then
+                    cp .env.example .env
+                fi
+                '''
             }
         }
 
