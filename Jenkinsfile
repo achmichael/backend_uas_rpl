@@ -21,6 +21,14 @@ pipeline {
             }
         }
 
+        stage('Clean up db container') {
+            steps {
+                sh '''
+                docker rm -f database_server || true
+                '''
+            }
+        }
+
         stage('Remove existing image'){
             steps {
                 sh 'docker rmi -f ${IMAGE_NAME}'
