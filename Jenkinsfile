@@ -31,7 +31,7 @@ pipeline {
 
         stage('Remove existing image'){
             steps {
-                sh 'docker rmi -f ${IMAGE_NAME}'
+                sh 'docker rmi -f backend-rpl-frankenphp:latest && docker rmi -f backend_uas_rpl-frankenphp:latest'
             }
         }
         
