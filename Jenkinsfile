@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'backend_uas_rpl-frankenphp'
+        IMAGE_NAME = 'backend-rpl-frankenphp:latest'
         CONTAINER_NAME = 'backend_frankenphp'
         DOCKER_BUILDKIT = 1
     }
@@ -32,7 +32,7 @@ pipeline {
                 sh 'cp .env.example .env'
             }
         }
-        
+
         stage('Build Docker Image') {
             steps {
                 sh 'docker compose up -d'
