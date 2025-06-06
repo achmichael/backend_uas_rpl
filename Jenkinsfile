@@ -14,6 +14,19 @@ pipeline {
             }
         }
 
+        stage('Remove existing container')
+        {
+            steps {
+                sh 'docker compose down'
+            }
+        }
+
+        stage('Remove existing image'){
+            steps {
+                sh 'docker rmi -f ${IMAGE_NAME}'
+            }
+        }
+        
         stage('Build Docker Image') {
             steps {
                 sh 'docker compose up -d'
