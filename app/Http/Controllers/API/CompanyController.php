@@ -271,14 +271,13 @@ class CompanyController extends Controller
                 'address'     => 'required|string',
                 'industry'    => 'required|string',
                 'website'     => 'required|string',
-                'slug'        => 'required|string|unique:companies,slug',
+                'slug'        => 'required|string',
                 'description' => 'nullable|string',
                 'social_links'=> 'nullable|json',
                 'founded_at'  => 'nullable|date',
             ]);
 
             $id = JWTAuth::parseToken()->authenticate()->id; 
-            
             $company = Company::find($id);
 
             if (! $company) {
