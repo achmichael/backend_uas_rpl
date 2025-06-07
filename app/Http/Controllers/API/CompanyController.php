@@ -278,7 +278,7 @@ class CompanyController extends Controller
             ]);
 
             $id = JWTAuth::parseToken()->authenticate()->id; 
-            $company = Company::find($id);
+            $company = Company::where('user_id', $id)->first();
 
             if (! $company) {
                 return error('company not found', 404);
