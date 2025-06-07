@@ -16,6 +16,7 @@ use App\Http\Controllers\API\UserProfileController;
 use App\Http\Controllers\API\UserSkillController;
 use App\Http\Controllers\API\ApplicationController;
 use App\Http\Controllers\API\AIController;
+use App\Http\Controllers\API\EmployeesCompanyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -90,6 +91,13 @@ Route::middleware(['jwt.auth'])->group(function () {
         Route::put('/{id}', [JobController::class, 'update']);
         Route::delete('/{id}', [JobController::class, 'delete']);
         Route::post('/company-jobs', [JobController::class, 'jobsByCompany']);
+    });
+
+    Route::prefix('employees')->group(function () {
+        Route::get('/', [EmployeesCompanyController::class, 'index']);
+        Route::get('/{id}', [EmployeesCompanyController::class, 'show']);
+        Route::post('/', [EmployeesCompanyController::class, 'store']);
+        Route::post('/addByCompany', [EmployeesCompanyController::class, 'addByCompany']);
     });
 
     Route::prefix('companies')->group(function () {

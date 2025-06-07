@@ -262,19 +262,23 @@ class CompanyController extends Controller
      * )
      */
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         try {
             $request->validate([
-                'name'    => 'required|string',
-                'image'   => 'required|string',
-                'address'  => 'required|string',
-                'phone'   => 'required|numeric',
-                'email'   => 'required|email',
-                'website' => 'required|string',
-                'founded' => 'required|numeric',
+                'name'        => 'required|string',
+                'cover_image' => 'required|string',
+                'address'     => 'required|string',
+                'industry'    => 'required|string',
+                'website'     => 'required|string',
+                'slug'        => 'required|string|unique:companies,slug',
+                'description' => 'nullable|string',
+                'social_links'=> 'nullable|json',
+                'founded_at'  => 'nullable|date',
             ]);
 
+            $id = JWTAuth::parseToken()->authenticate()->id; 
+            
             $company = Company::find($id);
 
             if (! $company) {
