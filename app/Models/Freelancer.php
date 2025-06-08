@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Freelancer extends Model
 {
     use UUID;
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     public function user()
     {

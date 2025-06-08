@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('freelancers', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->uuid('user_id');
-            $table->json('skills'); // Array: ["Laravel", "React"]
+            $table->json('skills')->nullable(); // Array: ["Laravel", "React"]
             $table->integer('experience_years');
-            $table->json('educations'); // Array: [{"degree": "Bachelor", "field": "Computer Science", "institution": "XYZ University", "year": 2020}]
-            $table->json('experiences'); // Array: [{"company": "ABC Corp", "position": "Developer", "duration": "2 years", "description": "Worked on various projects"}]
+            $table->json('educations')->nullable(); // Array: [{"degree": "Bachelor", "field": "Computer Science", "institution": "XYZ University", "year": 2020}]
+            $table->json('experiences')->nullable(); // Array: [{"company": "ABC Corp", "position": "Developer", "duration": "2 years", "description": "Worked on various projects"}]
             $table->float('rating');
             $table->float('salary');
             $table->uuid('portofolio_id');
