@@ -16,7 +16,7 @@ return new class extends Migration
             $table->uuid('post_id');
             $table->integer('number_of_employee')->nullable()->default(0);
             $table->integer('duration');
-            $table->enum('status', ['open','closed']);
+            $table->enum('status', ['open','closed', 'draft']);
             $table->enum('type_job',['full-time','part-time','contract']);
             $table->enum('type_salary',['fixed','flexible']);
             $table->enum('system',['wfo','wfh']);

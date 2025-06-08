@@ -194,10 +194,12 @@ class JobController extends Controller
 
     public function show($id)
     {
-        $job = Job::with(['post'])->find($id);
+        $job = Job::with(['post.applications.applicant'])->find($id);
+
         if (! $job) {
             return error('job not found', 404);
         }
+        
         return success($job, 'successfully', 200);
     }
 

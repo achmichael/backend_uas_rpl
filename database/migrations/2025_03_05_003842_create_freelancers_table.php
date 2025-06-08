@@ -18,6 +18,8 @@ return new class extends Migration
             $table->uuid('user_id');
             $table->json('skills'); // Array: ["Laravel", "React"]
             $table->integer('experience_years');
+            $table->json('educations'); // Array: [{"degree": "Bachelor", "field": "Computer Science", "institution": "XYZ University", "year": 2020}]
+            $table->json('experiences'); // Array: [{"company": "ABC Corp", "position": "Developer", "duration": "2 years", "description": "Worked on various projects"}]
             $table->float('rating');
             $table->float('salary');
             $table->uuid('portofolio_id');
