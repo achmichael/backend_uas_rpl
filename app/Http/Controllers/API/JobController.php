@@ -118,6 +118,8 @@ class JobController extends Controller
                 'description'          => 'required|string',
                 'price'                => 'required|numeric',
                 'required_skills'      => 'required|json',
+                'requirments'          => 'required|json',
+                'benefits'         => 'required|json',
                 'level_id'             => 'required|exists:levels,id',
                 'category_id'          => 'required|exists:categories,id',
                 'min_experience_years' => 'required|numeric',

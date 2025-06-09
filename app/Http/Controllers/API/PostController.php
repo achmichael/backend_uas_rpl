@@ -109,21 +109,27 @@ class PostController extends Controller
     {
         try {
             $request->validate([
-                'title'              => 'required|string|max:255',
-                'description'        => 'required|string',
-                'price'              => 'required|numeric',
-                'number_of_employee' => 'required|integer',
-                'posted_by'          => 'required|exists:users,id',
-                'category_id'        => 'required|exists:categories,id',
+                'title'                => 'required|string|max:255',
+                'description'          => 'required|string',
+                'price'                => 'required|numeric',
+                'number_of_employee'   => 'required|integer',
+                'posted_by'            => 'required|exists:users,id',
+                'category_id'          => 'required|exists:categories,id',
+                'level_id'             => 'required|exists:levels,id',
+                'required_skills'      => 'required|json',
+                'benefits'             => 'nullable|json',
+                'requirements'         => 'nullable|json',
+                'min_experience_years' => 'required|integer|min:0',
             ]);
-            $data            = $request->all();
-            $data['user_id'] = JWTAuth::parseToken()->authenticate()->id;
-            $post            = Post::create($data);
 
-            return success($post,'create post has successfully',200);
+            $data              = $request->all();
+            $data['posted_by'] = JWTAuth::parseToken()->authenticate()->id;
+            $post              = Post::create($data);
+
+            return success($post, 'create post has successfully', 200);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
-            return errorValidation($e->getMessage(),$e->errors(),422);
+            return errorValidation($e->getMessage(), $e->errors(), 422);
         }
     }
 
@@ -134,7 +140,7 @@ class PostController extends Controller
             ->orWhere('description', 'like', '%' . $request->q . '%')
             ->get();
 
-        return success($posts,'successfully',200);
+        return success($posts, 'successfully', 200);
     }
 
     /**
@@ -172,9 +178,9 @@ class PostController extends Controller
     {
         $post = Post::with(['category', 'user', 'reviews'])->find($id);
         if (! $post) {
-            return error('post not found',404);
+            return error('post not found', 404);
         }
-        return success($post,'success',200);
+        return success($post, 'success', 200);
     }
 
     /**
@@ -230,25 +236,31 @@ class PostController extends Controller
     {
         try {
             $request->validate([
-                'title'              => 'required|string|max:255',
-                'description'        => 'required|string',
-                'price'              => 'required|numeric',
-                'number_of_employee' => 'required|integer',
-                'posted_by'          => 'required|exists:users,id',
+                'title'                => 'required|string|max:255',
+                'description'          => 'required|string',
+                'price'                => 'required|numeric',
+                'number_of_employee'   => 'required|integer',
+                'posted_by'            => 'required|exists:users,id',
+                'category_id'          => 'required|exists:categories,id',
+                'level_id'             => 'required|exists:levels,id',
+                'required_skills'      => 'required|json',
+                'benefits'             => 'nullable|json',
+                'requirements'         => 'nullable|json',
+                'min_experience_years' => 'required|integer|min:0',
             ]);
-            
+
             $post = Post::find($id);
 
             if (! $post) {
-                return error('post not found',404);
+                return error('post not found', 404);
             }
 
             $post->update($request->all());
 
-            return success($id,'update post has successfully',200);
+            return success($id, 'update post has successfully', 200);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
-          return errorValidation($e->getMessage(),$e->errors(),422);
+            return errorValidation($e->getMessage(), $e->errors(), 422);
         }
     }
 
@@ -295,11 +307,11 @@ class PostController extends Controller
     {
         $post = Post::find($id);
         if (! $post) {
-            return error('post not found',404);
+            return error('post not found', 404);
         }
 
         $freelancers = $postService->matchingFreelancer($post);
-        return success($id,'success get post',200);
+        return success($id, 'success get post', 200);
     }
 
     /**
@@ -338,10 +350,10 @@ class PostController extends Controller
     {
         $post = Post::find($id);
         if (! $post) {
-            return error('post not found',404);
+            return error('post not found', 404);
         }
         $post->delete();
-        return success($post, 'success delete data',422);
+        return success($post, 'success delete data', 422);
     }
 
 }

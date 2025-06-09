@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('title', 150);
             $table->text('description');
             $table->float('price');
+            $table->json('benefits')->nullable(); // Array: ["Health Insurance", "Gym Membership"]
+            $table->json('requirements')->nullable(); // Array: ["Bachelor's Degree", "3+ Years Experience"]
             $table->unsignedBigInteger('level_id');
             $table->json('required_skills'); // Array: ["Laravel", "React"]
             $table->integer('min_experience_years');

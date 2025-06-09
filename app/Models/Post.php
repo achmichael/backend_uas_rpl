@@ -57,5 +57,7 @@ class Post extends Model
 
     protected $casts = [ // add this line to your model to cast the required_skills attribute to an array in the code and to a JSON when insert to database and reconverting it to an array when fetching from the database
         'required_skills' => 'array',
+        'benefits' => 'array',
+        'requirements' => 'array',
     ];
 }
