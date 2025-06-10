@@ -104,7 +104,7 @@ class PostController extends Controller
      *     )
      * )
      */
-
+    
     public function store(Request $request)
     {
         try {
@@ -123,7 +123,7 @@ class PostController extends Controller
             ]);
 
             $data              = $request->all();
-            $data['posted_by'] = JWTAuth::parseToken()->authenticate()->id;
+            $data['user_id'] = JWTAuth::parseToken()->authenticate()->id;
             $post              = Post::create($data);
 
             return success($post, 'create post has successfully', 200);

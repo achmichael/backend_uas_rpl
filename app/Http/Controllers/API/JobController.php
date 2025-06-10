@@ -118,8 +118,8 @@ class JobController extends Controller
                 'description'          => 'required|string',
                 'price'                => 'required|numeric',
                 'required_skills'      => 'required|json',
-                'requirments'          => 'required|json',
-                'benefits'         => 'required|json',
+                'requirments'          => 'nullable|json',
+                'benefits'             => 'nullable|json',
                 'level_id'             => 'required|exists:levels,id',
                 'category_id'          => 'required|exists:categories,id',
                 'min_experience_years' => 'required|numeric',
@@ -143,6 +143,8 @@ class JobController extends Controller
                     'level_id'             => $request->level_id,
                     'category_id'          => $request->category_id,
                     'min_experience_years' => $request->min_experience_years,
+                    'requirements'         => $request->requirments,
+                    'benefits'             => $request->benefits,
                 ]);
 
                 $post->job()->create([
