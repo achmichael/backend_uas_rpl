@@ -281,14 +281,14 @@ class FreelancerController extends Controller
             return error('Data freelancer tidak ditemukan', 404);
         }
 
-        $posts = Post::where('category_id', $freelancer->category_id)
+        $filteredPosts = Post::with(['user', 'category'])
+            ->where('category_id', $freelancer->category_id)
             ->where('min_experience_years', '<=', $freelancer->experience_years)
-            ->with(['user', 'category'])
             ->get();
 
-        if ($posts->isEmpty()) {
-            return error('Tidak ada postingan yang cocok untuk freelancer ini', 404);
-        }
+        $posts = $filteredPosts->isNotEmpty()
+        ? $filteredPosts
+        : Post::with(['user', 'category'])->get();
 
         return success($posts, 'Data postingan yang cocok untuk freelancer berhasil diambil', 200);
     }
