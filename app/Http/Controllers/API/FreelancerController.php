@@ -3,8 +3,10 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Freelancer;
+use App\Models\Portofolio;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
  * @OA\Tag(
@@ -105,18 +107,37 @@ class FreelancerController extends Controller
     public function store(Request $request)
     {
         try {
+
             $request->validate([
-                'user_id'     => 'required|numeric|exists:users,id',
-                'category_id' => 'required|numeric',
-                'description' => 'required|string',
-                'price'       => 'required|numeric',
+                'category_id'      => 'required|numeric|exists:categories,id',
+                'description'      => 'required|string',
+                'skills'           => 'nullable|json',
+                'experience_years' => 'required|numeric',
+                'educations'       => 'nullable|json',
+                'experiences'      => 'nullable|json',
+                'rating'           => 'required|numeric',
+                'salary'           => 'required|numeric',
+                'title'            => 'required|string|max:255',
+                'url'              => 'required|url',
             ]);
 
-            $data = Freelancer::create($request->all());
+            $userId = JWTAuth::parseToken()->authenticate()->id;
 
-            return success($data, 'Data freelancer berhasil disimpan', Response::HTTP_CREATED);
+            $portofolio = Portofolio::create([
+                'user_id' => $userId,
+                'title'   => $request->title,
+                'url'     => $request->url,
+            ]);
+
+            $values                  = $request->all();
+            $values['portofolio_id'] = $portofolio->id;
+            $values['user_id']       = $userId; // Assuming the user ID is obtained from JWT or session
+
+            $data = Freelancer::create($values);
+
+            return success($data, 'Data freelancer berhasil disimpan', 201);
         } catch (\Exception $e) {
-            return error($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return error($e->getMessage(), 500);
         }
     }
 
