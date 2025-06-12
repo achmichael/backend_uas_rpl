@@ -311,7 +311,7 @@ class PostController extends Controller
         }
 
         $freelancers = $postService->matchingFreelancer($post);
-        return success($id, 'success get post', 200);
+        return success($freelancers, 'success get post', 200);
     }
 
     /**

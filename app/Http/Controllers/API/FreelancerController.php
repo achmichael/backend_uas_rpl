@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Freelancer;
 use App\Models\Portofolio;
+use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -246,17 +247,51 @@ class FreelancerController extends Controller
             $data = Freelancer::find($id);
 
             if (! $data) {
-                return error('Data freelancer tidak ditemukan', Response::HTTP_NOT_FOUND);
+                return error('Data freelancer tidak ditemukan', 404);
             }
 
             $data->update($request->all());
 
-            return success($data, 'Data freelancer berhasil diubah', Response::HTTP_OK);
+            return success($data, 'Data freelancer berhasil diubah', 200);
         } catch (\Exception $e) {
-            return error($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            return error($e->getMessage(), 500);
         }
     }
 
+    public function activeJobs($id)
+    {
+        $matched = Freelancer::with(['user.providerContracts' => function ($query) {
+            $query->where('status', 'active');
+        }])->find($id);
+
+        if (! $matched) {
+            return error('Data freelancer tidak ditemukan', 404);
+        }
+
+        $jobs = $matched->user->providerContracts->map(fn($contract) => $contract->load('contract_type', 'client'));
+
+        return success($jobs, 'Data pekerjaan freelancer berhasil diambil', 200);
+    }
+
+    public function recommendedPosts($id)
+    {
+        $freelancer = Freelancer::find($id);
+
+        if (! $freelancer) {
+            return error('Data freelancer tidak ditemukan', 404);
+        }
+
+        $posts = Post::where('category_id', $freelancer->category_id)
+            ->where('min_experience_years', '<=', $freelancer->experience_years)
+            ->with(['user', 'category'])
+            ->get();
+
+        if ($posts->isEmpty()) {
+            return error('Tidak ada postingan yang cocok untuk freelancer ini', 404);
+        }
+
+        return success($posts, 'Data postingan yang cocok untuk freelancer berhasil diambil', 200);
+    }
     /**
      * @OA\Delete(
      *     path="/api/freelancers/{id}",

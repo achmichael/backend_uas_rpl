@@ -122,6 +122,8 @@ Route::middleware(['jwt.auth'])->group(function () {
         Route::post('/', [FreelancerController::class, 'store']);
         Route::put('/{id}', [FreelancerController::class, 'update']);
         Route::delete('/{id}', [FreelancerController::class, 'destroy']);
+        Route::get('/active-jobs/{id}', [FreelancerController::class, 'activeJobs']);
+        Route::get('/posts/{id}', [FreelancerController::class, 'recommendedPosts']);
     });
 
     Route::prefix('contracts')->group(function () {
