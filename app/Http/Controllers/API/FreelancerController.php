@@ -262,7 +262,7 @@ class FreelancerController extends Controller
     {
         $matched = Freelancer::with(['user.providerContracts' => function ($query) {
             $query->where('status', 'active');
-        }])->find($id);
+        }])->where('user_id', $id)->first();
 
         if (! $matched) {
             return error('Data freelancer tidak ditemukan', 404);
@@ -275,7 +275,7 @@ class FreelancerController extends Controller
 
     public function recommendedPosts($id)
     {
-        $freelancer = Freelancer::find($id);
+        $freelancer = Freelancer::where('user_id', $id)->first();
 
         if (! $freelancer) {
             return error('Data freelancer tidak ditemukan', 404);
