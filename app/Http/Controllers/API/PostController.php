@@ -120,6 +120,7 @@ class PostController extends Controller
                 'benefits'             => 'nullable|json',
                 'requirements'         => 'nullable|json',
                 'min_experience_years' => 'required|integer|min:0',
+                'status'              => 'required|in:open,closed,draft',
             ]);
 
             $data              = $request->all();
@@ -247,6 +248,7 @@ class PostController extends Controller
                 'benefits'             => 'nullable|json',
                 'requirements'         => 'nullable|json',
                 'min_experience_years' => 'required|integer|min:0',
+                'status'              => 'required|in:open,closed,draft',
             ]);
 
             $post = Post::find($id);

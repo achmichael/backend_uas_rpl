@@ -22,6 +22,7 @@ return new class extends Migration
             $table->unsignedBigInteger('level_id');
             $table->json('required_skills'); // Array: ["Laravel", "React"]
             $table->integer('min_experience_years');
+            $table->enum('status', ['open','closed', 'draft']);
             $table->unsignedBigInteger('category_id');
             $table->timestamps();
 

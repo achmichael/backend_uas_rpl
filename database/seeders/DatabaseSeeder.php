@@ -100,13 +100,13 @@ class DatabaseSeeder extends Seeder
             'category_id' => $category->id,
             // 'number_of_employee' => 2,
             'posted_by' => $user->id,
+            'status'              => 'open',
         ]);
 
         $job = Job::create([
             'post_id'             => $post->id,
             'number_of_employee'  => '6',
             'duration'            => '1.5',
-            'status'              => 'open',
             'type_job'            => 'full-time',
             'type_salary'         => 'flexible',
             'system'              => 'wfh',

@@ -143,6 +143,7 @@ class JobController extends Controller
                     'level_id'             => $request->level_id,
                     'category_id'          => $request->category_id,
                     'min_experience_years' => $request->min_experience_years,
+                    'status'               => $request->status,
                     'requirements'         => $request->requirments,
                     'benefits'             => $request->benefits,
                 ]);
@@ -151,7 +152,6 @@ class JobController extends Controller
                     'post_id'            => $post->id,
                     'number_of_employee' => $request->number_of_employee,
                     'duration'           => $request->duration,
-                    'status'             => $request->status,
                     'type_job'           => $request->type_job,
                     'type_salary'        => $request->type_salary,
                     'system'             => $request->system,
@@ -276,7 +276,6 @@ class JobController extends Controller
                     'min_experience_year' => 'required|numeric',
                     'number_of_employee'  => 'required|numeric',
                     'duration'            => 'required',
-                    'status'              => 'required|in:open,closed,draft',
                     'type_job'            => 'required',
                     'type_salary'         => 'required',
                     'system'              => 'required',
