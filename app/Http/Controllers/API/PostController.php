@@ -177,7 +177,7 @@ class PostController extends Controller
 
     public function show($id)
     {
-        $post = Post::with(['category', 'user', 'reviews', 'job', 'applications'])->find($id);
+        $post = Post::with(['category', 'user', 'reviews', 'job', 'applications', 'level'])->find($id);
         if (! $post) {
             return error('post not found', 404);
         }
