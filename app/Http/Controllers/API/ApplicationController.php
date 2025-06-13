@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Application;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ApplicationController extends Controller
 {
@@ -12,11 +13,9 @@ class ApplicationController extends Controller
     {
         try {
             $request->validate([
-                'post_id'      => 'required|uuid',
-                'applicant_id' => 'required|uuid',
-                'apply_file'   => 'required|string|max:300',
-                'amount'       => 'required|numeric',
-                'status'       => 'required|in:pending,accepted,rejected',
+                'post_id'    => 'required|uuid|exists:posts,id',
+                'apply_file' => 'required|string|max:300',
+                'amount'     => 'required|numeric',
             ]);
 
             $existingApplication = Application::where('post_id', $request->post_id)
@@ -26,6 +25,22 @@ class ApplicationController extends Controller
             if ($existingApplication) {
                 return error('Application already exists for this post and applicant', 409);
             }
+
+            $applicantId = JWTAuth::parseToken()->authenticate()->id;
+            $request->merge(['applicant_id' => $applicantId]);
+            
+            // validate that the applicant exists in the database
+            if (! \App\Models\User::find($applicantId)) {
+                return error('Applicant does not exist', 404);
+            }
+
+            // validate that the applicant is not the post owner
+            $post = \App\Models\Post::find($request->post_id);
+            if ($post->posted_by === $applicantId) {
+                return error('Applicant cannot be the post owner', 403);
+            }
+
+            $request->merge(['status' => 'pending']);
 
             $application = Application::create($request->all());
 
@@ -42,24 +57,27 @@ class ApplicationController extends Controller
                 'approver_id' => 'required|uuid',
                 'status'      => 'required|in:accepted,rejected',
             ]);
-    
+
             $application = Application::find($id);
-    
+
             if (! $application) {
                 return error('Application not found', 404);
             }
-    
+
             $application->changeStatus($request->status);
             return success($application, 'Application status updated successfully');
-        }catch (ValidationException $e){
+        } catch (ValidationException $e) {
             return error($e->errors(), 422);
         }
     }
-    
+
     public function delete($id)
     {
         $application = Application::find($id);
-        if (!$application) return error('Application not found', 404);
+        if (! $application) {
+            return error('Application not found', 404);
+        }
+
         $application->delete();
         return success($id, 'Application deleted successfully');
     }
@@ -67,7 +85,10 @@ class ApplicationController extends Controller
     public function update($id)
     {
         $application = Application::find($id);
-        if (!$application) return error('Application not found', 404);
+        if (! $application) {
+            return error('Application not found', 404);
+        }
+
         $application->update(request()->all());
         return success($application, 'Application updated successfully');
     }
@@ -75,7 +96,10 @@ class ApplicationController extends Controller
     public function show($id)
     {
         $application = Application::find($id);
-        if (!$application) return error('Application not found', 404);
+        if (! $application) {
+            return error('Application not found', 404);
+        }
+
         return success($application, 'Application retrieved successfully');
     }
 }
