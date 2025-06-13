@@ -163,7 +163,7 @@ class ContractController extends Controller
             'status' => 'nullable|in:active,completed,terminated',
         ]);
         
-        $userId = '3e528076-972f-40cf-9124-b5719ee346bd';
+        $userId = JWTAuth::parseToken()->authenticate()->id;
         $query  = Contract::query()->with(['contract_type', 'client', 'provider'])->whereHas('client', function ($query) use ($userId) {
             $query->where('id', $userId);
         })->orWhereHas('provider', function ($query) use ($userId) {
