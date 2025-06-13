@@ -22,7 +22,6 @@ class Post extends Model
     {
         return $this->belongsTo(User::class, 'posted_by');
     }
-
     
     public function category()
     {

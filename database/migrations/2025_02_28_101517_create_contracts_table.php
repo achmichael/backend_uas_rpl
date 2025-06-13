@@ -18,6 +18,7 @@ return new class extends Migration
             $table->uuid('contract_type_id'); // polymorphic relation 
             $table->uuid('provider_id');
             $table->timestamp('contract_date')->useCurrent();
+            $table->timestamp('due_date')->nullable();
             $table->enum('status', ['active', 'completed', 'terminated', 'pending'])->default('pending');
             $table->timestamps();
             

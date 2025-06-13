@@ -105,6 +105,7 @@ class ContractController extends Controller
                 'provider_id'   => ['required', 'exists:users,id', 'different:client_id', new RoleIdNot(1)],
                 'contract_date' => 'required|date',
                 'status'        => 'in:active,completed,terminated',
+                'due_date'      => 'nullable|date|after_or_equal:contract_date',
             ]);
 
             $contract = Contract::create($request->all());
@@ -162,11 +163,11 @@ class ContractController extends Controller
             'status' => 'nullable|in:active,completed,terminated',
         ]);
         
-        $userId = JWTAuth::parseToken()->authenticate()->id;
-        $query  = Contract::query()->with(['post', 'client', 'provider'])->whereHas('client', function ($query) use ($userId) {
-            $query->where('user_id', $userId);
+        $userId = '3e528076-972f-40cf-9124-b5719ee346bd';
+        $query  = Contract::query()->with(['contract_type', 'client', 'provider'])->whereHas('client', function ($query) use ($userId) {
+            $query->where('id', $userId);
         })->orWhereHas('provider', function ($query) use ($userId) {
-            $query->where('user_id', $userId);
+            $query->where('id', $userId);
         });
 
         if ($request->has('status') && $request->status) {
@@ -177,4 +178,5 @@ class ContractController extends Controller
 
         return success($contracts, 'Success get contract user', 200);
     }
+
 }
