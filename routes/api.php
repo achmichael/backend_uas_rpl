@@ -57,7 +57,7 @@ Route::get('/verify-token', [AuthController::class, 'verifyToken']);
 
 Route::get('/categories', [CategoryController::class, 'index']);
 
-Route::middleware([])->group(function () {
+Route::middleware(['jwt.auth'])->group(function () {
     Route::prefix('portofolios')->group(function () {
         Route::post('/', [PortofolioController::class, 'create']);
         Route::put('/{id}', [PortofolioController::class, 'update']);
