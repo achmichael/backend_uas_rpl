@@ -14,7 +14,7 @@ class ApplicationController extends Controller
         try {
             $request->validate([
                 'post_id'    => 'required|uuid|exists:posts,id',
-                'apply_file' => 'required|string|max:300',
+                'apply_file' => 'required|file|mimes:pdf,doc,docx|max:5120',
                 'amount'     => 'required|numeric',
             ]);
 
@@ -28,7 +28,7 @@ class ApplicationController extends Controller
 
             $applicantId = JWTAuth::parseToken()->authenticate()->id;
             $request->merge(['applicant_id' => $applicantId]);
-            
+
             // validate that the applicant exists in the database
             if (! \App\Models\User::find($applicantId)) {
                 return error('Applicant does not exist', 404);
@@ -42,6 +42,10 @@ class ApplicationController extends Controller
 
             $request->merge(['status' => 'pending']);
 
+            $path = $request->file('apply_file')->store('applications');
+
+            $request->merge(['apply_file' => $path]);
+            
             $application = Application::create($request->all());
 
             return success($application, 'Application created successfully');
