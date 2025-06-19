@@ -263,13 +263,13 @@ class FreelancerController extends Controller
 
     public function activeJobs($id)
     {
-        $matched = Freelancer::with(['user.providerContracts.contractable'])->whereHas('user.providerContracts', fn ($query) => $query->where('status', 'active'))->where('user_id', $id)->first();
+        $matched = Freelancer::with(['user.providerContracts'])->whereHas('user.providerContracts', fn ($query) => $query->where('status', 'active'))->where('user_id', $id)->first();
 
         if (! $matched) {
             return error('Data freelancer tidak ditemukan', 404);
         }
 
-        $jobs = $matched->user->providerContracts->map(fn($contract) => $contract->load('contractable', 'client'));
+        $jobs = $matched->user->providerContracts->map(fn ($contract) => $contract->load('contractable', 'client'));
 
         $contracts = Contract::with(['contractable', 'client', 'provider'])
             ->whereHas('provider', function ($query) use ($id) {
