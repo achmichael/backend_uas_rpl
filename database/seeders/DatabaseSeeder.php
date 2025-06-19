@@ -105,21 +105,21 @@ class DatabaseSeeder extends Seeder
 
         $job = Job::create([
             'post_id'             => $post->id,
-            'number_of_employee'  => '6',
-            'duration'            => '1.5',
+            'number_of_employee'  => 6,
+            'duration'            => 1,
             'type_job'            => 'full-time',
             'type_salary'         => 'flexible',
             'system'              => 'wfh',
         ]);
 
-        Contract::create([
-            'contract_type' => Job::class,
-            'contract_type_id' => $job->id,
+        $contract = new Contract([
             'client_id' => User::pluck('id')->random(), 
             'provider_id' => $user->id,
             'contract_date' => now(),
             'status' => 'active',
         ]);
+
+        $job->contract()->save($contract);
 
         $company = Company::create([
             'user_id'      => $user->id,

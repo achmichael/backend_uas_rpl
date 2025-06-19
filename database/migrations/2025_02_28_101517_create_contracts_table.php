@@ -12,10 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('contracts', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('contract_type'); 
+            $table->uuid('id')->primary(); 
             $table->uuid('client_id');
-            $table->uuid('contract_type_id'); // polymorphic relation 
+            $table->uuidMorphs('contractable'); 
             $table->uuid('provider_id');
             $table->timestamp('contract_date')->useCurrent();
             $table->timestamp('due_date')->nullable();

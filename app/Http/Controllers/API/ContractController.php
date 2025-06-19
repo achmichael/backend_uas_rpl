@@ -164,7 +164,7 @@ class ContractController extends Controller
         ]);
         
         $userId = JWTAuth::parseToken()->authenticate()->id;
-        $query  = Contract::query()->with(['contract_type', 'client', 'provider'])->whereHas('client', function ($query) use ($userId) {
+        $query  = Contract::query()->with(['contractable', 'client', 'provider'])->whereHas('client', function ($query) use ($userId) {
             $query->where('id', $userId);
         })->orWhereHas('provider', function ($query) use ($userId) {
             $query->where('id', $userId);

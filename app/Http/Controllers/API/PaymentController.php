@@ -17,20 +17,20 @@ class PaymentController extends Controller
             Config::$isSanitized  = config('midtrans.isSanitized');
             Config::$is3ds        = config('midtrans.is3ds');
 
-            $contract = \App\Models\Contract::with(['contract_type', 'client'])->find($request->input('contract_id'));
+            $contract = \App\Models\Contract::with(['contractable', 'client'])->find($request->input('contract_id'));
             if (! $contract) {
                 return error('contract not found',400);
             }
 
             $transactionDetails = [
                 'order_id'     => uniqid(),
-                'gross_amount' => $request->input('amount', $contract->contract_type->price),
+                'gross_amount' => $request->input('amount', $contract->contractable->price),
                 'item_details' => [
                     [
-                        'id'       => $contract->contract_type->id,
-                        'price'    => $request->input('amount') ?? $contract->contract_type->price,
+                        'id'       => $contract->contractable->id,
+                        'price'    => $request->input('amount') ?? $contract->contractable->price,
                         'quantity' => 1,
-                        'name'     => $contract->contract_type->name,
+                        'name'     => $contract->contractable->name,
                     ],
                 ],
             ];

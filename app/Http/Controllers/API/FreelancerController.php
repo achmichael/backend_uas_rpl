@@ -2,11 +2,14 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Contract;
 use App\Models\Freelancer;
+use App\Models\Job;
 use App\Models\Portofolio;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
@@ -260,17 +263,31 @@ class FreelancerController extends Controller
 
     public function activeJobs($id)
     {
-        $matched = Freelancer::with(['user.providerContracts' => function ($query) {
-            $query->where('status', 'active');
-        }])->where('user_id', $id)->first();
+        $matched = Freelancer::with(['user.providerContracts.contractable'])->whereHas('user.providerContracts', fn ($query) => $query->where('status', 'active'))->where('user_id', $id)->first();
 
         if (! $matched) {
             return error('Data freelancer tidak ditemukan', 404);
         }
 
-        $jobs = $matched->user->providerContracts->map(fn($contract) => $contract->load('contract_type', 'client'));
+        $jobs = $matched->user->providerContracts->map(fn($contract) => $contract->load('contractable', 'client'));
 
-        return success($jobs, 'Data pekerjaan freelancer berhasil diambil', 200);
+        $contracts = Contract::with(['contractable', 'client', 'provider'])
+            ->whereHas('provider', function ($query) use ($id) {
+                $query->where('id', $id);
+            })
+            ->where('status', 'completed')
+            ->get();
+
+        $totalIncome = $contracts->sum(function ($contract) {
+            if ($contract->contractable && $contract->contractable instanceof Post){
+                return $contract->contractable->price ?? 0;
+            }elseif ($contract->contractable && $contract->contractable instanceof Job){
+                $contract->contractable->load('post');
+                return $contract->contractable->post->price ?? 0;
+            }
+        });
+
+        return success(['jobs' => $jobs, 'total_income' => $totalIncome], 'Data pekerjaan freelancer berhasil diambil', 200);
     }
 
     public function recommendedPosts($id)

@@ -20,7 +20,7 @@ class Job extends Model
 
     public function contract()
     {
-        return $this->morphOne(Contract::class, 'contract_type');
+        return $this->morphOne(Contract::class, 'contractable');
     }
 
 }

@@ -16,9 +16,9 @@ class Contract extends Model
         return $this->belongsTo(Post::class);
     }
 
-    public function contract_type()
+    public function contractable()
     {
-        return $this->morphTo(__FUNCTION__, 'contract_type', 'contract_type_id');
+        return $this->morphTo();
     }
 
     public function client()
