@@ -57,7 +57,7 @@ Route::get('/verify-token', [AuthController::class, 'verifyToken']);
 
 Route::get('/categories', [CategoryController::class, 'index']);
 
-Route::middleware(['jwt.auth'])->group(function () {
+Route::middleware([])->group(function () {
     Route::prefix('portofolios')->group(function () {
         Route::post('/', [PortofolioController::class, 'create']);
         Route::put('/{id}', [PortofolioController::class, 'update']);
@@ -122,6 +122,7 @@ Route::middleware(['jwt.auth'])->group(function () {
         Route::post('/', [FreelancerController::class, 'store']);
         Route::put('/{id}', [FreelancerController::class, 'update']);
         Route::delete('/{id}', [FreelancerController::class, 'destroy']);
+        Route::get('/profile/{userId}', [FreelancerController::class, 'showByUserId']);
         Route::get('/active-jobs/{id}', [FreelancerController::class, 'activeJobs']);
         Route::get('/posts/{id}', [FreelancerController::class, 'recommendedPosts']);
     });

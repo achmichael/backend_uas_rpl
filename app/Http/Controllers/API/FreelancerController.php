@@ -9,7 +9,6 @@ use App\Models\Portofolio;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
@@ -145,6 +144,8 @@ class FreelancerController extends Controller
         }
     }
 
+
+
     /**
      * @OA\Get(
      *     path="/api/freelancers/{id}",
@@ -261,6 +262,36 @@ class FreelancerController extends Controller
         }
     }
 
+    public function showByUserId($userId)
+    {
+        $freelancer = Freelancer::with(['user.certificates', 'category', 'user.portofolio', 'user.location'])->where('user_id', $userId)->first();
+        if (! $freelancer) {
+            return error('Data freelancer tidak ditemukan', 404);
+        }
+        
+        $jobs = $freelancer->user->providerContracts()->where('status', 'completed')->get()->map(function ($contract) {
+            return $contract->load('contractable', 'client');
+        });
+
+        $totalIncome = $jobs->sum(function ($contract) {
+            if ($contract->contractable && $contract->contractable instanceof Post) {
+                return $contract->contractable->price ?? 0;
+            } elseif ($contract->contractable && $contract->contractable instanceof Job) {
+                $contract->contractable->load(['post' => function($query) {
+                    $query->select('id', 'price', 'title', 'description'); 
+                }]);
+                return $contract->contractable->post->price ?? 0;
+            }
+            return 0;
+        });
+
+        return success([
+            'freelancer' => $freelancer,
+            'jobs'       => $jobs,
+            'total_income' => $totalIncome
+        ], 'Data freelancer berhasil diambil', 200);
+    }
+
     public function activeJobs($id)
     {
         $matched = Freelancer::with(['user.providerContracts'])->whereHas('user.providerContracts', fn ($query) => $query->where('status', 'active'))->where('user_id', $id)->first();
@@ -282,7 +313,9 @@ class FreelancerController extends Controller
             if ($contract->contractable && $contract->contractable instanceof Post){
                 return $contract->contractable->price ?? 0;
             }elseif ($contract->contractable && $contract->contractable instanceof Job){
-                $contract->contractable->load('post');
+                $contract->contractable->load(['post' => function($query) {
+                    $query->select('id', 'price', 'title', 'description'); 
+                }]);
                 return $contract->contractable->post->price ?? 0;
             }
         });
